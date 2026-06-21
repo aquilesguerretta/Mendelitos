@@ -50,7 +50,7 @@ export const STRINGS = {
       {
         emoji: "💞",
         title: "Cruze e descubra",
-        body: "Junte uma fêmea (♀) e um macho (♂). Cada filhote recebe um alelo de cada pai. Cores, orelhas, cristas e escamas surgem das combinações.",
+        body: "Junte uma fêmea (♀) e um macho (♂). Cada filhote recebe um alelo de cada pai. Cores, orelhas, asas e escamas surgem das combinações.",
       },
       {
         emoji: "🗂️",

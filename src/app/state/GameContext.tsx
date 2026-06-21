@@ -21,6 +21,7 @@ import {
 } from "../engine/save";
 import { detectDiscoveries } from "../engine/discovery";
 import { phenotype, phenotypeKey, formatGenotype } from "../engine/phenotype";
+import { dexCatalog } from "../engine/dex";
 import { MISSIONS } from "../data/missions";
 import { WORLD_NAMES } from "../data/genes";
 import { STRINGS } from "../data/strings";
@@ -122,6 +123,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
         // Dex: registra fenótipos descobertos no mundo atual
         const dex = new Set(s.discoveredPhenotypes);
         for (const c of collection) dex.add(phenotypeKey(c, s.world));
+
+        // Dex do mundo completou agora?
+        const cat = dexCatalog(s.world);
+        const wasComplete = cat.every((e) => s.discoveredPhenotypes.includes(e.key));
+        const nowComplete = cat.every((e) => dex.has(e.key));
+        if (nowComplete && !wasComplete) {
+          setTimeout(() => {
+            toast(STRINGS.messages.dexWorldComplete, { icon: "🗂️" });
+            playSfx("ding");
+          }, 1000);
+        }
 
         // feedback
         if (newlyCompleted.length) {

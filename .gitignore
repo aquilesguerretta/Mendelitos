@@ -28,3 +28,6 @@ Thumbs.db
 
 # Ferramentas locais
 .claude
+
+# teste da engine (gerado)
+scripts/.engine.test.mjs

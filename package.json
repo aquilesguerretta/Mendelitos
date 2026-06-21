@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "test:engine": "esbuild scripts/engine.test.ts --bundle --platform=node --format=esm --outfile=scripts/.engine.test.mjs && node scripts/.engine.test.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

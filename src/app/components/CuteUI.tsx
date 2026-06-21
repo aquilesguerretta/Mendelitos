@@ -62,12 +62,72 @@ export function Panel({
   children: ReactNode;
   className?: string;
 }) {
+  return <div className={`m-clay rounded-[26px] ${className}`}>{children}</div>;
+}
+
+// Micro-rótulo de seção (tipografia "de design")
+export function SectionLabel({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <p className={`m-eyebrow text-[#7E64B0]/65 ${className}`}>{children}</p>;
+}
+
+// Barra de progresso arredondada e animada
+export function ProgressBar({
+  value,
+  max,
+  color = "#BCA2E6",
+  className = "",
+}: {
+  value: number;
+  max: number;
+  color?: string;
+  className?: string;
+}) {
+  const pct = max > 0 ? Math.max(0, Math.min(100, (value / max) * 100)) : 0;
   return (
-    <div
-      className={`rounded-3xl bg-white shadow-[0_8px_24px_rgba(174,150,232,0.12)] ${className}`}
+    <div className={`m-track h-2.5 ${className}`}>
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${pct}%` }}
+        transition={{ type: "spring", stiffness: 120, damping: 22 }}
+        className="h-full rounded-full"
+        style={{ background: color }}
+      />
+    </div>
+  );
+}
+
+// Botão de ícone redondo, tátil
+export function IconButton({
+  children,
+  onClick,
+  label,
+  active = false,
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+  label?: string;
+  active?: boolean;
+}) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.9 }}
+      onClick={() => {
+        playSfx("tap");
+        onClick?.();
+      }}
+      aria-label={label}
+      className={`m-clay flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-[#7E64B0] ${
+        active ? "ring-2 ring-[#BCA2E6]" : ""
+      }`}
     >
       {children}
-    </div>
+    </motion.button>
   );
 }
 

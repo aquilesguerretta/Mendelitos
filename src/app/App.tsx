@@ -28,6 +28,7 @@ function Game() {
   return (
     <div className="m-app-bg flex min-h-[100dvh] w-full justify-center text-[#4A4063]">
       <div className="m-app-bg relative w-full max-w-md shadow-[0_0_60px_-20px_rgba(174,150,232,0.4)]">
+        <div className="m-grain-overlay" />
         {screen === "title" && (
           <TitleScreen
             onStart={() => {

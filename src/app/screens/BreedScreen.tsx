@@ -136,6 +136,13 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
     onBack();
   };
 
+  const breedAgain = () => {
+    const toKeep = litter.filter((d) => keep[d.child.id]).map((d) => d.child);
+    game.keepCreatures(toKeep);
+    setCardQueue([]);
+    startBreed(); // mesmos pais continuam selecionados
+  };
+
   // ---------- RENDER ----------
   if (phase === "select") {
     return (
@@ -296,9 +303,14 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
             <p className="mb-2 text-center text-sm font-semibold text-[#4A4063] font-body">
               {STRINGS.keepRelease}
             </p>
-            <CuteButton variant="primary" onClick={finishKeep} full>
-              {STRINGS.buttons.continuar} →
-            </CuteButton>
+            <div className="flex gap-2">
+              <CuteButton variant="ghost" onClick={breedAgain} className="flex-1">
+                🔁 De novo
+              </CuteButton>
+              <CuteButton variant="primary" onClick={finishKeep} className="flex-1">
+                {STRINGS.buttons.continuar} →
+              </CuteButton>
+            </div>
           </div>
         )}
       </div>

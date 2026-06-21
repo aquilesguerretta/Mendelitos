@@ -109,5 +109,5 @@ export const WORLD_GENES: Record<1 | 2 | 3, GeneKey[]> = {
 export const WORLD_NAMES: Record<1 | 2 | 3, string> = {
   1: "Vale das Cores",
   2: "Bosque das Formas",
-  3: "Caverna Cristalina",
+  3: "Caverna Encantada",
 };
