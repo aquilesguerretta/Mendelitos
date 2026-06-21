@@ -6,7 +6,7 @@
 // (missões -> moeda -> mundo) de forma determinística.
 // ============================================================================
 
-import { createContext, useContext, useEffect, useMemo, useReducer, useRef } from 'react'
+import { createContext, useContext, useEffect, useMemo, useReducer } from 'react'
 import { makeStarterPair } from '../engine/starters.js'
 import { semTrace } from '../engine/breeding.js'
 import { dexKey, allDexSlots, totalDex } from '../engine/dex.js'
@@ -234,12 +234,9 @@ export function GameProvider({ children }) {
     return estadoInicial()
   })
 
-  // Salva sempre que um campo persistível muda.
-  const primeiraVez = useRef(true)
+  // Salva sempre que um campo persistível muda (idempotente; inclui o estado
+  // inicial, garantindo que os Mendelitos fundadores persistam de cara).
   useEffect(() => {
-    if (primeiraVez.current) {
-      primeiraVez.current = false
-    }
     salvar(paraSalvar(state))
   }, [
     state.colecao,

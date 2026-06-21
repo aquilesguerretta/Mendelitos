@@ -37,7 +37,7 @@ export default function TitleScreen() {
         <p className="mt-2 text-lg font-semibold text-tinta/70">{S.subtitulo}</p>
       </div>
 
-      <button className="btn-primario px-10 py-4 text-xl" onPointerUp={jogar}>
+      <button className="btn-primario px-10 py-4 text-xl" onClick={jogar}>
         ▶ {S.botoes.jogar}
       </button>
 

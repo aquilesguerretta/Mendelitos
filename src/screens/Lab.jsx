@@ -47,7 +47,7 @@ export default function Lab() {
         </div>
         <div className="flex items-center gap-2">
           <span className="chip">🪙 {state.moeda}</span>
-          <button className="btn-claro !px-3 !py-2" onPointerUp={() => abrir('config')} aria-label={S.config}>
+          <button className="btn-claro !px-3 !py-2" onClick={() => abrir('config')} aria-label={S.config}>
             ⚙
           </button>
         </div>
@@ -57,7 +57,7 @@ export default function Lab() {
       {ativa && (
         <button
           className="mb-3 flex items-center gap-2 rounded-fofo border-2 border-roxo/20 bg-white px-4 py-3 text-left shadow-suave active:scale-[0.99]"
-          onPointerUp={() => abrir('missoes')}
+          onClick={() => abrir('missoes')}
         >
           <span className="text-xl">🎯</span>
           <span className="flex-1 text-sm font-semibold text-tinta">{ativa.texto}</span>
@@ -67,16 +67,16 @@ export default function Lab() {
 
       {/* navegação principal */}
       <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <button className="btn-primario col-span-2 text-lg sm:col-span-1" onPointerUp={cruzar}>
+        <button className="btn-primario col-span-2 text-lg sm:col-span-1" onClick={cruzar}>
           💞 {S.botoes.cruzar}
         </button>
-        <button className="btn-sol" onPointerUp={() => abrir('missoes')}>
+        <button className="btn-sol" onClick={() => abrir('missoes')}>
           🎯 {S.botoes.missoes}
         </button>
-        <button className="btn-rosa" onPointerUp={() => abrir('codex')}>
+        <button className="btn-rosa" onClick={() => abrir('codex')}>
           📖 {S.botoes.codex}
         </button>
-        <button className="btn-verde" onPointerUp={() => abrir('dex')}>
+        <button className="btn-verde" onClick={() => abrir('dex')}>
           🗂️ {S.botoes.dex}
         </button>
       </div>

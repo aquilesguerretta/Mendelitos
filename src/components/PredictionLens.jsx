@@ -52,6 +52,34 @@ function Celula({ geno, fen, sexo }) {
   )
 }
 
+function Proporcoes({ contagem, total, gene }) {
+  return (
+    <>
+      {Object.entries(contagem).map(([fen, n]) => (
+        <div key={fen} className="flex items-center gap-2 text-sm">
+          <span
+            className="h-3 w-5 rounded-full border border-black/10"
+            style={{ background: COR_FEN[fen] }}
+          />
+          <span className="font-semibold text-tinta">
+            {n}/{total}
+          </span>
+          <span className="text-tinta/70">{(S.fenLabel[gene] && S.fenLabel[gene][fen]) || fen}</span>
+        </div>
+      ))}
+    </>
+  )
+}
+
+function ProporcaoGrupo({ titulo, contagem, total, gene }) {
+  return (
+    <div>
+      <p className="text-xs font-bold text-tinta/60">{titulo}</p>
+      <Proporcoes contagem={contagem} total={total} gene={gene} />
+    </div>
+  )
+}
+
 // Constrói o quadro de Punnett de um gene.
 function punnett(geneKey, mother, father) {
   const linhas = mother.genes[geneKey] // 2 gametas da mãe
@@ -66,6 +94,7 @@ function punnett(geneKey, mother, father) {
 
   const cells = []
   const contagem = {}
+  const porSexo = { XX: {}, XY: {} } // usado só no gene ligado ao X
   for (const r of linhas) {
     for (const c of colunas) {
       let geno
@@ -87,9 +116,10 @@ function punnett(geneKey, mother, father) {
       }
       cells.push({ geno, fen, sexo })
       contagem[fen] = (contagem[fen] || 0) + 1
+      if (sexo) porSexo[sexo][fen] = (porSexo[sexo][fen] || 0) + 1
     }
   }
-  return { linhas, colunas, cells, contagem }
+  return { linhas, colunas, cells, contagem, porSexo, xlinked }
 }
 
 function crossLabel(geneKey, mother, father) {
@@ -109,7 +139,7 @@ export default function PredictionLens({ mother, father, onClose, onCruzar }) {
       emoji="🔮"
       onClose={onClose}
       footer={
-        <button className="btn-primario w-full" onPointerUp={onCruzar}>
+        <button className="btn-primario w-full" onClick={onCruzar}>
           {S.botoes.cruzarConfirmar}
         </button>
       }
@@ -120,7 +150,7 @@ export default function PredictionLens({ mother, father, onClose, onCruzar }) {
       </p>
       <div className="space-y-5">
         {ativos.map((g) => {
-          const { linhas, colunas, cells, contagem } = punnett(g, mother, father)
+          const { linhas, colunas, cells, contagem, porSexo, xlinked } = punnett(g, mother, father)
           return (
             <div key={g} className="rounded-fofo border-2 border-roxo/15 bg-fundo/50 p-4">
               <div className="mb-2 flex items-baseline justify-between">
@@ -150,22 +180,17 @@ export default function PredictionLens({ mother, father, onClose, onCruzar }) {
                     </div>
                   ))}
                 </div>
-                {/* proporções */}
-                <div className="flex flex-1 flex-col gap-1">
-                  {Object.entries(contagem).map(([fen, n]) => (
-                    <div key={fen} className="flex items-center gap-2 text-sm">
-                      <span
-                        className="h-3 w-5 rounded-full border border-black/10"
-                        style={{ background: COR_FEN[fen] }}
-                      />
-                      <span className="font-semibold text-tinta">
-                        {n}/{cells.length}
-                      </span>
-                      <span className="text-tinta/70">
-                        {S.fenLabel[g][fen] || fen}
-                      </span>
-                    </div>
-                  ))}
+                {/* proporções — para o gene ligado ao X, separadas por sexo
+                    (a frequência é diferente em fêmeas e machos: é a lição). */}
+                <div className="flex flex-1 flex-col gap-2">
+                  {xlinked ? (
+                    <>
+                      <ProporcaoGrupo titulo="♀ Fêmeas (XX)" contagem={porSexo.XX} total={2} gene={g} />
+                      <ProporcaoGrupo titulo="♂ Machos (XY)" contagem={porSexo.XY} total={2} gene={g} />
+                    </>
+                  ) : (
+                    <Proporcoes contagem={contagem} total={cells.length} gene={g} />
+                  )}
                 </div>
               </div>
             </div>

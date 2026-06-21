@@ -122,7 +122,7 @@ export default function BreedScreen() {
   return (
     <div className="mx-auto flex min-h-[100dvh] max-w-3xl flex-col px-4 pb-8 pt-4">
       <header className="mb-3 flex items-center justify-between">
-        <button className="btn-claro !px-3 !py-2" onPointerUp={voltarLab}>
+        <button className="btn-claro !px-3 !py-2" onClick={voltarLab}>
           ← {S.botoes.voltar}
         </button>
         <h1 className="font-titulo text-2xl font-bold text-roxo">💞 {S.botoes.cruzar}</h1>
@@ -162,7 +162,7 @@ export default function BreedScreen() {
                 className="btn-fantasma flex-1"
                 disabled={!parValido}
                 style={{ opacity: parValido ? 1 : 0.5 }}
-                onPointerUp={() => parValido && setLente(true)}
+                onClick={() => parValido && setLente(true)}
               >
                 🔮 {S.botoes.lente}
               </button>
@@ -170,7 +170,7 @@ export default function BreedScreen() {
                 className="btn-primario flex-1"
                 disabled={!parValido}
                 style={{ opacity: parValido ? 1 : 0.5 }}
-                onPointerUp={iniciarCruzamento}
+                onClick={iniciarCruzamento}
               >
                 💞 {S.botoes.cruzarConfirmar}
               </button>
@@ -241,7 +241,7 @@ export default function BreedScreen() {
                   <p className="text-[11px] font-bold text-tinta/60">{S.sexoLabel[f.sex]}</p>
                   <button
                     className={fica ? 'btn-verde !py-2 w-full' : 'btn-claro !py-2 w-full'}
-                    onPointerUp={() => {
+                    onClick={() => {
                       Sfx.click()
                       setManter((m) => ({ ...m, [f.id]: !m[f.id] }))
                     }}
@@ -255,7 +255,7 @@ export default function BreedScreen() {
 
           <div className="fixed inset-x-0 bottom-0 z-20 border-t border-roxo/10 bg-fundo/95 px-4 py-3 backdrop-blur">
             <div className="mx-auto flex max-w-3xl">
-              <button className="btn-primario w-full" onPointerUp={confirmarGuardar}>
+              <button className="btn-primario w-full" onClick={confirmarGuardar}>
                 {S.botoes.continuar} →
               </button>
             </div>

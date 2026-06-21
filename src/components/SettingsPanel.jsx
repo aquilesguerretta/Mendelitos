@@ -21,7 +21,7 @@ export default function SettingsPanel({ onClose }) {
           <span className="font-semibold text-tinta">🔊 {S.som}</span>
           <button
             className={state.som ? 'btn-verde !py-2' : 'btn-claro !py-2'}
-            onPointerUp={toggleSom}
+            onClick={toggleSom}
             aria-pressed={state.som}
           >
             {state.som ? 'Ligado' : 'Mudo'}
@@ -34,7 +34,7 @@ export default function SettingsPanel({ onClose }) {
         </div>
 
         {!confirmando ? (
-          <button className="btn-claro w-full !text-rosa" onPointerUp={() => setConfirmando(true)}>
+          <button className="btn-claro w-full !text-rosa" onClick={() => setConfirmando(true)}>
             🗑️ {S.reiniciar}
           </button>
         ) : (
@@ -43,14 +43,14 @@ export default function SettingsPanel({ onClose }) {
             <div className="flex gap-2">
               <button
                 className="btn-rosa flex-1"
-                onPointerUp={() => {
+                onClick={() => {
                   dispatch({ type: 'REINICIAR' })
                   onClose()
                 }}
               >
                 {S.reiniciarSim}
               </button>
-              <button className="btn-claro flex-1" onPointerUp={() => setConfirmando(false)}>
+              <button className="btn-claro flex-1" onClick={() => setConfirmando(false)}>
                 {S.cancelar}
               </button>
             </div>

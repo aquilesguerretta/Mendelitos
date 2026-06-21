@@ -34,7 +34,7 @@ export default function DiscoveryCard({ carta, indice = 1, total = 1, onNext }) 
             <p key={i}>{comNegrito(par, i)}</p>
           ))}
         </div>
-        <button className="btn-primario mt-2 self-end" onPointerUp={onNext}>
+        <button className="btn-primario mt-2 self-end" onClick={onNext}>
           {indice < total ? S.botoes.continuar : '🎉 ' + S.botoes.continuar}
         </button>
       </div>

@@ -31,7 +31,18 @@ export default function CreatureCard({
       className={`card relative flex flex-col items-center gap-1 border-2 p-2 ${borda} ${
         selecionavel ? 'cursor-pointer active:scale-95 transition-transform' : ''
       }`}
-      onPointerUp={selecionavel ? () => onSelect?.(creature) : undefined}
+      onClick={selecionavel ? () => onSelect?.(creature) : undefined}
+      onKeyDown={
+        selecionavel
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onSelect?.(creature)
+              }
+            }
+          : undefined
+      }
+      tabIndex={selecionavel ? 0 : undefined}
       role={selecionavel ? 'button' : undefined}
       aria-pressed={selecionavel ? selecionado : undefined}
     >
@@ -77,7 +88,7 @@ export default function CreatureCard({
         onScan && (
           <button
             className="btn-fantasma !px-2 !py-1 !text-xs"
-            onPointerUp={(e) => {
+            onClick={(e) => {
               e.stopPropagation()
               onScan(creature)
             }}

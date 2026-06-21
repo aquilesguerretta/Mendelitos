@@ -49,8 +49,7 @@ export default function Creature({
       className={`relative inline-block ${className}`}
       style={{ width: size, height: size }}
       onPointerDown={tocar}
-      role={interactive ? 'button' : undefined}
-      aria-label={interactive ? `Mendelito ${fen.cor}` : undefined}
+      aria-hidden="true"
     >
       {shiny && (
         <div className="pointer-none absolute inset-0 -z-10 animate-brilho rounded-full bg-sol/40 blur-xl" />

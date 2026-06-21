@@ -53,7 +53,7 @@ export default function Dex({ onClose }) {
             <button
               key={m}
               className={m === mundo ? 'btn-primario !py-2' : 'btn-fantasma !py-2'}
-              onPointerUp={() => setMundo(m)}
+              onClick={() => setMundo(m)}
             >
               {MUNDOS[m].nome}
             </button>

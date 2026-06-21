@@ -6,7 +6,7 @@
 // reforçando a herança ligada ao X na própria animação.
 // ============================================================================
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import Creature from './Creature/index.jsx'
 import { genesAtivos, GENES } from '../data/genes.js'
@@ -49,10 +49,19 @@ export default function Segregation({ mother, father, litter, onComplete }) {
   const ativos = genesAtivos(state.mundo)
   const [fase, setFase] = useState(0)
   const geneAtual = ativos[fase]
+  const totalFases = ativos.length
+
+  // onComplete pode ser uma função inline recriada a cada render do pai
+  // (ex.: churn de toasts). Guardamos numa ref para os timers de fase não
+  // serem reiniciados por re-renders externos.
+  const onCompleteRef = useRef(onComplete)
+  useEffect(() => {
+    onCompleteRef.current = onComplete
+  }, [onComplete])
 
   useEffect(() => {
-    if (fase >= ativos.length) {
-      const t = setTimeout(onComplete, 500)
+    if (fase >= totalFases) {
+      const t = setTimeout(() => onCompleteRef.current(), 500)
       return () => clearTimeout(t)
     }
     // snap quando os tokens encaixam
@@ -62,7 +71,7 @@ export default function Segregation({ mother, father, litter, onComplete }) {
       clearTimeout(tSnap)
       clearTimeout(tProx)
     }
-  }, [fase, ativos.length, onComplete])
+  }, [fase, totalFases])
 
   return (
     <div className="flex flex-col items-center">
