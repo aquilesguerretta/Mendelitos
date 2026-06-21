@@ -66,12 +66,34 @@ export function defaultState(): SaveState {
   };
 }
 
+// Migração: renomeia os fundadores antigos (Lila/Theo) para Gabriela/Aquiles,
+// incluindo os nomes guardados na linhagem dos filhotes.
+const ren = (n: string | undefined) =>
+  n === "Lila" ? "Gabriela" : n === "Theo" ? "Aquiles" : n;
+
+function migrate(state: SaveState): SaveState {
+  return {
+    ...state,
+    collection: (state.collection || []).map((c) => ({
+      ...c,
+      nickname: ren(c.nickname),
+      parents: c.parents
+        ? {
+            ...c.parents,
+            motherName: ren(c.parents.motherName) ?? c.parents.motherName,
+            fatherName: ren(c.parents.fatherName) ?? c.parents.fatherName,
+          }
+        : c.parents,
+    })),
+  };
+}
+
 export function loadState(): SaveState {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw) as Partial<SaveState>;
-    return { ...defaultState(), ...parsed };
+    return migrate({ ...defaultState(), ...parsed });
   } catch {
     return defaultState();
   }
