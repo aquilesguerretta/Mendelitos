@@ -22,11 +22,20 @@ import { step, alleleFreq, seedPopulation, sample, mutate } from "../engine/popu
 import { playSfx } from "../engine/audio";
 import type { Creature } from "../engine/types";
 
-// Berço é população GRANDE (fica em Hardy-Weinberg); regiões/colônias são
-// pequenas (seleção age rápido e a deriva aparece).
+// Berço é população GRANDE (fica em Hardy-Weinberg); regiões/colônias usam o
+// tamanho escolhido no Modo Livre (pequena = mais deriva).
 const K_BERCO = 800;
-const K_REGION = 72;
-const popK = (id: string) => (id === "berco" ? K_BERCO : K_REGION);
+const popK = (id: string, kRegion: number) => (id === "berco" ? K_BERCO : kRegion);
+const PRESSURES = [
+  { label: "Fraca", m: 0.45 },
+  { label: "Média", m: 1 },
+  { label: "Forte", m: 1.7 },
+];
+const POPS = [
+  { label: "Pequena", k: 40 },
+  { label: "Média", k: 72 },
+  { label: "Grande", k: 130 },
+];
 const SPEEDS = [
   { label: "1×", ms: 750 },
   { label: "2×", ms: 360 },
@@ -43,21 +52,23 @@ function freqOf(r: (typeof REGIONS)[number], pop: Creature[]): number {
   return alleleFreq(pop, r.trackGene, r.trackAllele);
 }
 
+// Estado inicial das regiões: Berço + Selva + Dunas fundados; resto vazio.
+function seedRegions(kRegion: number): Record<string, RegionSim> {
+  const init: Record<string, RegionSim> = {};
+  for (const r of REGIONS) {
+    if (r.id === "berco" || r.id === "selva" || r.id === "dunas") {
+      const pop = seedPopulation(popK(r.id, kRegion), r.trackGene, dom(r), rec(r), 0.5);
+      init[r.id] = { pop, founded: true, p: freqOf(r, pop) };
+    } else {
+      init[r.id] = { pop: [], founded: false, p: 0 };
+    }
+  }
+  return init;
+}
+
 export function EvolutionScreen({ onBack }: { onBack: () => void }) {
   const game = useGame();
-  const [sims, setSims] = useState<Record<string, RegionSim>>(() => {
-    const init: Record<string, RegionSim> = {};
-    // Berço + Selva + Dunas começam fundados (A Grande Divisão); resto vazio.
-    for (const r of REGIONS) {
-      if (r.id === "berco" || r.id === "selva" || r.id === "dunas") {
-        const pop = seedPopulation(popK(r.id), r.trackGene, dom(r), rec(r), 0.5);
-        init[r.id] = { pop, founded: true, p: freqOf(r, pop) };
-      } else {
-        init[r.id] = { pop: [], founded: false, p: 0 };
-      }
-    }
-    return init;
-  });
+  const [sims, setSims] = useState<Record<string, RegionSim>>(() => seedRegions(POPS[1].k));
   const [gen, setGen] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -66,12 +77,18 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
   ]);
   const [mutationOn, setMutationOn] = useState(false);
   const [migrateFrom, setMigrateFrom] = useState<string | null>(null);
+  const [pressure, setPressure] = useState(1); // índice em PRESSURES
+  const [popIdx, setPopIdx] = useState(1); // índice em POPS (tamanho das regiões)
   const seen = useRef<Set<string>>(new Set());
   const simsRef = useRef(sims);
   simsRef.current = sims;
   const genRef = useRef(0);
   const mutOnRef = useRef(mutationOn);
   mutOnRef.current = mutationOn;
+  const pressureRef = useRef(pressure);
+  pressureRef.current = pressure;
+  const popIdxRef = useRef(popIdx);
+  popIdxRef.current = popIdx;
   const foundedAt = useRef<Record<string, number>>({ berco: 0, selva: 0, dunas: 0 });
 
   // marca um conceito do Codex + carta/toast uma única vez
@@ -96,7 +113,10 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
           next[r.id] = s;
           continue;
         }
-        let pop = step(s.pop, r.selection, popK(r.id));
+        const sel = r.selection
+          ? { ...r.selection, s: Math.min(0.95, r.selection.s * PRESSURES[pressureRef.current].m) }
+          : null;
+        let pop = step(s.pop, sel, popK(r.id, POPS[popIdxRef.current].k));
         if (mutOnRef.current) pop = mutate(pop, r.trackGene, 0.01);
         next[r.id] = { pop, founded: true, p: freqOf(r, pop) };
       }
@@ -191,7 +211,7 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
     if (!berco.founded || berco.pop.length < 6) return;
     const founders = sample(berco.pop, 8); // poucos fundadores -> efeito fundador
     const r = REGIONS.find((x) => x.id === id)!;
-    const pop = regrow(founders, popK(id));
+    const pop = regrow(founders, popK(id, POPS[popIdxRef.current].k));
     const sim = { pop, founded: true, p: freqOf(r, pop) };
     foundedAt.current[id] = genRef.current;
     simsRef.current = { ...simsRef.current, [id]: sim };
@@ -240,18 +260,7 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
     foundedAt.current = { berco: 0, selva: 0, dunas: 0 };
     setGen(0);
     setHistory([{ gen: 0, berco: 50, selva: 50, dunas: 50 }]);
-    setSims(() => {
-      const init: Record<string, RegionSim> = {};
-      for (const r of REGIONS) {
-        if (r.id === "berco" || r.id === "selva" || r.id === "dunas") {
-          const pop = seedPopulation(popK(r.id), r.trackGene, dom(r), rec(r), 0.5);
-          init[r.id] = { pop, founded: true, p: freqOf(r, pop) };
-        } else {
-          init[r.id] = { pop: [], founded: false, p: 0 };
-        }
-      }
-      return init;
-    });
+    setSims(seedRegions(POPS[popIdxRef.current].k));
   };
 
   return (
@@ -348,6 +357,53 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
         <p className="mt-2 px-1 text-center text-xs text-[#4A4063]/60 font-body">
           Aperte <b>Play</b> e veja a mesma espécie virar roxa na Selva e amarela nas Dunas — enquanto o Berço (sem pressão) fica parado.
         </p>
+
+        {/* Modo Livre: pressão da seleção + tamanho das regiões */}
+        <div className="m-clay mt-3 rounded-[20px] p-3">
+          <SectionLabel className="mb-2 block">🎚️ Modo Livre</SectionLabel>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-bold text-[#4A4063]/70">Pressão da seleção</span>
+            <div className="flex gap-1 rounded-full bg-white/60 p-1">
+              {PRESSURES.map((p, i) => (
+                <button
+                  key={p.label}
+                  onClick={() => {
+                    playSfx("tap");
+                    setPressure(i);
+                  }}
+                  className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                    pressure === i ? "bg-[#BCA2E6] text-white" : "text-[#4A4063]/55"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <span className="text-xs font-bold text-[#4A4063]/70">População das regiões</span>
+            <div className="flex gap-1 rounded-full bg-white/60 p-1">
+              {POPS.map((p, i) => (
+                <button
+                  key={p.label}
+                  onClick={() => {
+                    playSfx("tap");
+                    setPopIdx(i);
+                  }}
+                  className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                    popIdx === i ? "bg-[#9CC8F0] text-white" : "text-[#4A4063]/55"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="mt-2 text-[10px] leading-snug text-[#4A4063]/50 font-body">
+            Pressão fraca → evolui devagar (perto de Hardy-Weinberg). População pequena → mais deriva.
+            Vale para os <b>próximos</b> nascimentos.
+          </p>
+        </div>
 
         {/* forças: mutação + regiões */}
         <div className="mb-2 mt-4 flex items-center justify-between">
