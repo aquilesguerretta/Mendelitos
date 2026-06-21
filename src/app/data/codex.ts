@@ -7,6 +7,8 @@ export interface CodexEntry {
   found: string; // "Você encontrou / viu..."
   body: string;
   diagram: string; // dica de mini-diagrama
+  realWorld?: string; // linha "No mundo real" (exemplo seguro que cai na prova)
+  note?: string; // linha-ponte de notação (ex.: I^A / I^B na prova)
   // condição de desbloqueio: ids de conceitos (cartas) ou genes
   unlockHint: string;
 }
@@ -30,6 +32,7 @@ export const CODEX: CodexEntry[] = [
     body:
       "Com dois alelos diferentes, às vezes só um se manifesta: o dominante (MAIÚSCULA, C). O outro fica escondido: o recessivo (minúscula, c). O recessivo só aparece quando o bichinho tem dois deles (cc).",
     diagram: "Cc → roxo;  cc → amarelo.",
+    realWorld: "No mundo real: a doença de Huntington é dominante — basta um alelo para se manifestar.",
     unlockHint: "primeiro-cruzamento",
   },
   {
@@ -60,6 +63,8 @@ export const CODEX: CodexEntry[] = [
     body:
       "Portador é o heterozigoto (Cc) que mostra o traço dominante mas guarda o recessivo. Cruzando dois portadores, o recessivo reaparece. Por isso traços recessivos \"somem\" e voltam gerações depois.",
     diagram: "Cc × Cc → pode nascer cc.",
+    realWorld:
+      "No mundo real: é assim que funcionam a fibrose cística e a anemia falciforme — só manifesta com as duas cópias do alelo recessivo; com uma só, a pessoa é portadora saudável.",
     unlockHint: "portador",
   },
   {
@@ -100,6 +105,10 @@ export const CODEX: CodexEntry[] = [
     body:
       "Nenhum alelo domina totalmente; o heterozigoto fica num meio-termo. A proporção fenotípica é igual à genotípica: 1:2:1.",
     diagram: "VV vermelha, VB rosa, BB branca.",
+    realWorld:
+      "No mundo real: a flor boca-de-leão — vermelha × branca dá rosa, exatamente o meio-termo.",
+    note:
+      "Na prova, esses alelos costumam vir com letra-base e expoente — tipo F^V e F^B (de boca-de-leão). No jogo usamos V e B; é a mesma ideia.",
     unlockHint: "dominanciaIncompleta",
   },
   {
@@ -110,6 +119,10 @@ export const CODEX: CodexEntry[] = [
     body:
       "Os dois alelos se manifestam por completo e ao mesmo tempo — não viram um meio-termo. O heterozigoto mostra as duas características inteiras.",
     diagram: "AA azul, AR azul+vermelha, RR vermelha.",
+    realWorld:
+      "No mundo real: o tipo sanguíneo AB — os alelos A e B aparecem os dois ao mesmo tempo.",
+    note:
+      "Na prova, o sistema ABO aparece como I^A e I^B (letra-base I com expoente). No jogo usamos A e R nas escamas; é a mesma lógica de dois alelos que se expressam juntos.",
     unlockHint: "codominancia",
   },
   {
@@ -118,8 +131,22 @@ export const CODEX: CodexEntry[] = [
     title: "Herança Ligada ao X",
     found: "Olhos pequenos eram mais comuns nos machos.",
     body:
-      "O gene fica no cromossomo X. A fêmea tem dois X (pode ser portadora); o macho tem um X e um Y, então um único alelo recessivo já se manifesta. A mãe portadora passa para os filhos.",
+      "O gene fica no cromossomo X. A fêmea tem dois X (pode ser portadora); o macho tem um X e um Y — ele é hemizigoto (tem um alelo só do gene), então um único alelo recessivo já se manifesta nele. A mãe portadora passa o alelo para metade da prole; os afetados costumam ser os machos, e as filhas se tornam portadoras.",
     diagram: "X^G X^g fêmea portadora; X^g Y macho afetado.",
+    realWorld:
+      "No mundo real: o daltonismo e a hemofilia são ligados ao X recessivos — por isso aparecem mais em homens.",
     unlockHint: "ligadoX",
+  },
+  {
+    id: "cruzamento-teste",
+    n: 12,
+    title: "Cruzamento-teste",
+    found: "Você usou o Scanner para revelar o genótipo escondido de um Mendelito.",
+    body:
+      "Antes do Scanner, o jeito de descobrir se um Mendelito dominante era homozigoto (CC) ou portador (Cc) era cruzá-lo com um recessivo puro (cc). Se aparecer qualquer filhote recessivo, ele era portador (a prole sai por volta de 1:1). Se a prole for grande e todos saírem dominantes, ele era homozigoto. Isso é o cruzamento-teste — o Scanner é a versão instantânea dele.",
+    diagram: "Dominante × cc → algum recessivo? então era portador.",
+    realWorld:
+      "No mundo real: criadores de plantas e animais usam o cruzamento-teste até hoje para saber se um exemplar carrega um alelo escondido.",
+    unlockHint: "cruzamento-teste",
   },
 ];

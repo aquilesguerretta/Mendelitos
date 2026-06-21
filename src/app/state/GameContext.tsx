@@ -203,7 +203,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!creature) return null;
     const geno = formatGenotype(creature, gene);
     const p = phenotype(creature);
-    setState((st) => ({ ...st, coins: st.coins - 1 }));
+    const firstScan = !s.unlockedConcepts.includes("cruzamento-teste");
+    // Escanear = cruzamento-teste instantâneo: desbloqueia o conceito no Codex.
+    setState((st) => ({
+      ...st,
+      coins: st.coins - 1,
+      unlockedConcepts: st.unlockedConcepts.includes("cruzamento-teste")
+        ? st.unlockedConcepts
+        : [...st.unlockedConcepts, "cruzamento-teste"],
+    }));
+    if (firstScan) {
+      setTimeout(() => {
+        toast("🔬 Isto é um cruzamento-teste instantâneo!", {
+          description: "Veja no Codex como descobrir alelos escondidos.",
+        });
+      }, 700);
+    }
     return `${geno} — ${(p as Record<string, string>)[gene]}`;
   }, []);
 

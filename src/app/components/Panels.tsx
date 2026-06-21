@@ -116,6 +116,16 @@ export function CodexPanel({ onClose }: { onClose: () => void }) {
                 >
                   <p className="mb-2 text-sm italic text-[#7E64B0]">{entry.found}</p>
                   <p className="text-sm leading-relaxed text-[#4A4063]/90 font-body">{entry.body}</p>
+                  {entry.realWorld && (
+                    <p className="mt-2 rounded-xl border-l-4 border-[#BFD3A2] bg-[#BFD3A2]/15 px-3 py-2 text-sm italic leading-relaxed text-[#5E7A3E] font-body">
+                      🌍 {entry.realWorld}
+                    </p>
+                  )}
+                  {entry.note && (
+                    <p className="mt-1.5 rounded-xl bg-[#BCA2E6]/10 px-3 py-2 text-xs italic leading-relaxed text-[#7E64B0] font-body">
+                      📝 {entry.note}
+                    </p>
+                  )}
                   <div className="mt-2 rounded-xl bg-[#F3F1E4] px-3 py-2 text-xs text-[#4A4063]/80">
                     📊 {entry.diagram}
                   </div>
