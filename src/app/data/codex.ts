@@ -149,4 +149,102 @@ export const CODEX: CodexEntry[] = [
       "No mundo real: criadores de plantas e animais usam o cruzamento-teste até hoje para saber se um exemplar carrega um alelo escondido.",
     unlockHint: "cruzamento-teste",
   },
+
+  // ===== Genética de populações (v2 — Pangênia) =====
+  {
+    id: "selecao-natural",
+    n: 13,
+    title: "Seleção Natural",
+    found: "Na Selva Roxa, os amarelos foram sumindo geração após geração.",
+    body:
+      "O ambiente não trata todos os fenótipos igual: quem se adapta melhor sobrevive e deixa mais filhotes, e os alelos desses fenótipos ficam mais comuns. A seleção age sobre o fenótipo (o que aparece) — por isso um recessivo escondido num portador escapa dela.",
+    diagram: "Aptidão alta → mais filhotes → alelo sobe.",
+    realWorld:
+      "No mundo real: as mariposas que escureceram nas árvores cobertas de fuligem da Revolução Industrial.",
+    unlockHint: "selecao-natural",
+  },
+  {
+    id: "adaptacao-local",
+    n: 14,
+    title: "Adaptação Local",
+    found: "A mesma espécie virou roxa na Selva e amarela nas Dunas.",
+    body:
+      "Populações da mesma origem, em ambientes diferentes, são moldadas por pressões diferentes e divergem. O que é vantagem num lugar é desvantagem no outro.",
+    diagram: "Selva → roxo · Dunas → amarelo.",
+    realWorld:
+      "No mundo real: a raposa-do-deserto (orelhas enormes pra dissipar calor) e a raposa-do-ártico (orelhas pequenas pra conservá-lo).",
+    unlockHint: "adaptacao-local",
+  },
+  {
+    id: "aptidao",
+    n: 15,
+    title: "Aptidão (valor adaptativo)",
+    found: "Alguns fenótipos deixavam mais filhotes que outros.",
+    body:
+      "Aptidão é o quanto um fenótipo consegue sobreviver e se reproduzir naquele ambiente. Aptidão alta = mais descendentes = o alelo correspondente sobe. Não é \"força\" — é sucesso reprodutivo no contexto.",
+    diagram: "Aptidão = sobrevivência × reprodução.",
+    unlockHint: "aptidao",
+  },
+  {
+    id: "frequencia-alelica",
+    n: 16,
+    title: "Frequência Alélica",
+    found: "O gráfico mostrava o alelo C subindo e o c descendo.",
+    body:
+      "É a proporção de cada alelo na população inteira (p e q, com p + q = 1). Evolução, no fundo, é a mudança dessas frequências ao longo das gerações. O gene continua lá; muda o quanto cada versão dele aparece.",
+    diagram: "p + q = 1.",
+    unlockHint: "frequencia-alelica",
+  },
+  {
+    id: "equilibrio",
+    n: 17,
+    title: "Equilíbrio de Hardy-Weinberg",
+    found: "No Berço, sem pressão, as frequências ficaram paradas.",
+    body:
+      "Numa população grande, com acasalamento aleatório e sem forças evolutivas (seleção, mutação, migração, deriva), as frequências de alelos e genótipos não mudam — a população não evolui. É a régua da genética de populações: serve pra medir quando e quanto uma população real está evoluindo. Qualquer força que você ligar quebra o equilíbrio.",
+    diagram: "p² + 2pq + q² = 1.",
+    note: "Proposto por Hardy e Weinberg em 1908, e embasado nas próprias Leis de Mendel.",
+    unlockHint: "equilibrio",
+  },
+  {
+    id: "deriva",
+    n: 18,
+    title: "Deriva Genética",
+    found: "Numa população pequena, um alelo sumiu sem nenhuma pressão a favor.",
+    body:
+      "Em populações pequenas, o acaso pesa: pelo puro sorteio de quem se reproduz, as frequências oscilam e um alelo pode fixar ou sumir sem ser \"melhor\". Quanto menor a população, mais forte a deriva.",
+    diagram: "Pop pequena → mais oscilação → fixa/perde.",
+    unlockHint: "deriva",
+  },
+  {
+    id: "efeito-fundador",
+    n: 19,
+    title: "Efeito Fundador",
+    found: "O grupinho que colonizou a ilha já saiu com frequências diferentes do Berço.",
+    body:
+      "Quando poucos indivíduos fundam uma população nova, eles são só uma amostra do grupo original — e podem, por acaso, carregar frequências bem diferentes. A nova população parte daí. É um caso especial de deriva.",
+    diagram: "Poucos fundadores → frequências enviesadas.",
+    realWorld: "No mundo real: os tentilhões e a fauna isolada de Galápagos.",
+    unlockHint: "efeito-fundador",
+  },
+  {
+    id: "fluxo-genico",
+    n: 20,
+    title: "Fluxo Gênico (Migração)",
+    found: "Mover Mendelitos entre regiões mudou as frequências das duas.",
+    body:
+      "Quando indivíduos migram, levam seus alelos junto. Isso mistura as frequências e pode reaproximar populações que estavam divergindo — ou levar uma novidade pra um lugar que não a tinha.",
+    diagram: "Migração → mistura as frequências.",
+    unlockHint: "fluxo-genico",
+  },
+  {
+    id: "mutacao",
+    n: 21,
+    title: "Mutação (fonte de variação)",
+    found: "Do nada surgiu um alelo que não existia em nenhum Mendelito.",
+    body:
+      "A mutação é uma mudança no DNA que cria um alelo novo. É a fonte original de toda a variação — os alelos que você cruza surgiram, lá atrás, de mutações. A mutação cria a variação; a seleção ordena o que foi criado.",
+    diagram: "Mutação cria · seleção ordena.",
+    unlockHint: "mutacao",
+  },
 ];

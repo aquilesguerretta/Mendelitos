@@ -5,6 +5,7 @@
 import { breedDetailed } from "../src/app/engine/breeding";
 import { phenotype } from "../src/app/engine/phenotype";
 import { dexCatalog } from "../src/app/engine/dex";
+import { step, alleleFreq, seedPopulation, fitness } from "../src/app/engine/population";
 import type { Creature, Genes, Sex } from "../src/app/engine/types";
 
 let pass = 0;
@@ -107,6 +108,48 @@ for (const w of [1, 2, 3] as const) {
   // cada entrada tem uma criatura de exemplo que reproduz sua chave
   const reproduz = cat.every((e) => typeof e.key === "string" && e.creature != null);
   ok(reproduz, `Dex mundo ${w}: cada slot tem criatura de exemplo`);
+}
+
+console.log("— Genética de populações (Pangênia) —");
+// Aptidão age sobre o fenótipo
+ok(fitness(phenotype(mk("XX", { cor: ["C", "c"] })), { gene: "cor", favored: ["roxo"], s: 0.5 }) === 1,
+  "portador (Cc, roxo) tem aptidão cheia sob seleção a favor de roxo");
+ok(fitness(phenotype(mk("XX", { cor: ["c", "c"] })), { gene: "cor", favored: ["roxo"], s: 0.5 }) < 1,
+  "amarelo (cc) é penalizado sob seleção a favor de roxo");
+
+// Hardy-Weinberg: população grande, sem seleção -> frequência praticamente parada
+{
+  let pop = seedPopulation(4000, "cor", "C", "c", 0.5);
+  for (let g = 0; g < 18; g++) pop = step(pop, null, 4000);
+  approx(alleleFreq(pop, "cor", "C"), 0.5, 0.09, "Berço (sem força, N grande): p fica ~0.5 (Hardy-Weinberg)");
+}
+
+// Seleção: a favor de roxo faz p(C) subir; o recessivo cai mas NÃO some na hora
+{
+  let pop = seedPopulation(800, "cor", "C", "c", 0.5);
+  for (let g = 0; g < 25; g++) pop = step(pop, { gene: "cor", favored: ["roxo"], s: 0.6 }, 800);
+  const pC = alleleFreq(pop, "cor", "C");
+  ok(pC > 0.8, `seleção a favor de roxo eleva p(C) (obteve ${pC.toFixed(2)})`);
+  ok(1 - pC > 0, "o alelo recessivo (c) se esconde no heterozigoto e persiste (q > 0)");
+}
+
+// Deriva: população pequena fixa/perde alelo muito mais que população grande
+{
+  const fixedFrac = (K: number, runs: number, gens: number) => {
+    let fixed = 0;
+    for (let r = 0; r < runs; r++) {
+      let pop = seedPopulation(K, "cor", "C", "c", 0.5);
+      for (let g = 0; g < gens; g++) pop = step(pop, null, K);
+      const f = alleleFreq(pop, "cor", "C");
+      if (f <= 0.001 || f >= 0.999) fixed++;
+    }
+    return fixed / runs;
+  };
+  const small = fixedFrac(10, 50, 40);
+  const large = fixedFrac(400, 12, 40);
+  ok(small > large, `deriva: pop pequena fixa mais (pequena ${small.toFixed(2)} > grande ${large.toFixed(2)})`);
+  ok(small > 0.35, `deriva forte em pop pequena (${small.toFixed(2)})`);
+  ok(large < 0.2, `pop grande quase não fixa por acaso (${large.toFixed(2)})`);
 }
 
 console.log("\n============================");

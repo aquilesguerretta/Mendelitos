@@ -43,6 +43,7 @@ interface GameApi extends SaveState {
   setSeenTitle: () => void;
   setSeenIntro: () => void;
   toggleFavorite: (id: string) => void;
+  unlockConcept: (id: string) => void;
   resetProgress: () => void;
   isConceptUnlocked: (id: string) => boolean;
 }
@@ -243,6 +244,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const unlockConcept = useCallback<GameApi["unlockConcept"]>((id) => {
+    setState((s) =>
+      s.unlockedConcepts.includes(id)
+        ? s
+        : { ...s, unlockedConcepts: [...s.unlockedConcepts, id] },
+    );
+  }, []);
+
   const resetProgress = useCallback<GameApi["resetProgress"]>(() => {
     resetState();
     setState(defaultState());
@@ -266,6 +275,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setSeenTitle,
       setSeenIntro,
       toggleFavorite,
+      unlockConcept,
       resetProgress,
       isConceptUnlocked,
     }),
@@ -281,6 +291,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setSeenTitle,
       setSeenIntro,
       toggleFavorite,
+      unlockConcept,
       resetProgress,
       isConceptUnlocked,
     ],

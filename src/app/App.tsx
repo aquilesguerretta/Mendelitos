@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import { GameProvider, useGame } from "./state/GameContext";
 import { TitleScreen } from "./screens/TitleScreen";
@@ -7,7 +7,12 @@ import { Lab } from "./screens/Lab";
 import { BreedScreen } from "./screens/BreedScreen";
 import { startMusic } from "./engine/audio";
 
-type Screen = "title" | "intro" | "lab" | "breed";
+// Evolução carrega recharts — sob demanda, pra não pesar a abertura.
+const EvolutionScreen = lazy(() =>
+  import("./screens/EvolutionScreen").then((m) => ({ default: m.EvolutionScreen })),
+);
+
+type Screen = "title" | "intro" | "lab" | "breed" | "evolution";
 
 function Game() {
   const game = useGame();
@@ -46,8 +51,21 @@ function Game() {
             }}
           />
         )}
-        {screen === "lab" && <Lab onBreed={() => setScreen("breed")} />}
+        {screen === "lab" && (
+          <Lab onBreed={() => setScreen("breed")} onEvolution={() => setScreen("evolution")} />
+        )}
         {screen === "breed" && <BreedScreen onBack={() => setScreen("lab")} />}
+        {screen === "evolution" && (
+          <Suspense
+            fallback={
+              <div className="flex h-[100dvh] items-center justify-center font-display text-[#7E64B0]">
+                🌍 Carregando Pangênia…
+              </div>
+            }
+          >
+            <EvolutionScreen onBack={() => setScreen("lab")} />
+          </Suspense>
+        )}
       </div>
     </div>
   );
