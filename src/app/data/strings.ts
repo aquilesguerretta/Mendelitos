@@ -45,7 +45,7 @@ export const STRINGS = {
       {
         emoji: "🧬",
         title: "Genética de verdade",
-        body: "Mendelitos são criaturinhas fofas que seguem as Leis de Mendel — as mesmas da biologia. A aparência de cada filhote é o genótipo dele na tela.",
+        body: "Mendelitos são criaturinhas fofas que seguem as Leis de Mendel — genética de verdade. A aparência de cada filhote vem direto dos genes dele… mas nem todo gene se mostra na superfície.",
       },
       {
         emoji: "💞",
