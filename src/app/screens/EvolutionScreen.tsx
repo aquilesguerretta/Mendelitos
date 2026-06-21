@@ -18,7 +18,7 @@ import {
 import { useGame } from "../state/GameContext";
 import { Blobs, SectionLabel } from "../components/CuteUI";
 import { REGIONS } from "../data/regions";
-import { step, alleleFreq, seedPopulation, sample } from "../engine/population";
+import { step, alleleFreq, seedPopulation, sample, mutate } from "../engine/population";
 import { playSfx } from "../engine/audio";
 import type { Creature } from "../engine/types";
 
@@ -64,10 +64,15 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
   const [history, setHistory] = useState<Record<string, number>[]>([
     { gen: 0, berco: 50, selva: 50, dunas: 50 },
   ]);
+  const [mutationOn, setMutationOn] = useState(false);
+  const [migrateFrom, setMigrateFrom] = useState<string | null>(null);
   const seen = useRef<Set<string>>(new Set());
   const simsRef = useRef(sims);
   simsRef.current = sims;
   const genRef = useRef(0);
+  const mutOnRef = useRef(mutationOn);
+  mutOnRef.current = mutationOn;
+  const foundedAt = useRef<Record<string, number>>({ berco: 0, selva: 0, dunas: 0 });
 
   // marca um conceito do Codex + carta/toast uma única vez
   const fire = (id: string, emoji: string, title: string, desc: string) => {
@@ -91,7 +96,8 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
           next[r.id] = s;
           continue;
         }
-        const pop = step(s.pop, r.selection, popK(r.id));
+        let pop = step(s.pop, r.selection, popK(r.id));
+        if (mutOnRef.current) pop = mutate(pop, r.trackGene, 0.01);
         next[r.id] = { pop, founded: true, p: freqOf(r, pop) };
       }
       simsRef.current = next;
@@ -144,6 +150,37 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
           );
         }
       }
+      // Mutação: um alelo que tinha sumido (fixado) reaparece
+      if (mutOnRef.current) {
+        for (const r of REGIONS) {
+          const a = cur[r.id];
+          const b = next[r.id];
+          if (a.founded && b.founded && ((a.p === 1 && b.p < 1) || (a.p === 0 && b.p > 0))) {
+            fire(
+              "mutacao",
+              "🧬",
+              "NOVIDADE",
+              `Em ${r.name} surgiu um alelo que tinha sumido — a mutação cria a variação que a seleção depois ordena.`,
+            );
+          }
+        }
+      }
+      // Arquipélago: vantagem do heterozigoto mantém os dois alelos juntos
+      const arq = next["arquipelago"];
+      if (
+        arq &&
+        arq.founded &&
+        g - (foundedAt.current["arquipelago"] ?? 0) > 12 &&
+        arq.p > 0.32 &&
+        arq.p < 0.68
+      ) {
+        fire(
+          "meio-termo",
+          "🌗",
+          "O MEIO-TERMO VENCE",
+          "No terreno misto, quem mistura as duas características (asas rosa) se camufla melhor que os puros — então os dois alelos sobrevivem juntos.",
+        );
+      }
     }, ms);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,6 +193,7 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
     const r = REGIONS.find((x) => x.id === id)!;
     const pop = regrow(founders, popK(id));
     const sim = { pop, founded: true, p: freqOf(r, pop) };
+    foundedAt.current[id] = genRef.current;
     simsRef.current = { ...simsRef.current, [id]: sim };
     setSims((prev) => ({ ...prev, [id]: sim }));
     playSfx("pop");
@@ -168,10 +206,38 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
     );
   };
 
+  // Fluxo gênico: migrantes de uma região levam alelos para outra.
+  const doMigrate = (from: string, to: string) => {
+    setMigrateFrom(null);
+    if (from === to) return;
+    const src = simsRef.current[from];
+    const dst = simsRef.current[to];
+    if (!src?.founded || !dst?.founded || src.pop.length < 6 || dst.pop.length < 6) return;
+    const migrants = sample(src.pop, 8);
+    const dstPop = [...dst.pop];
+    for (let i = 0; i < migrants.length; i++) {
+      dstPop[Math.floor(Math.random() * dstPop.length)] = { ...migrants[i], id: `${migrants[i].id}_mig${i}` };
+    }
+    const rTo = REGIONS.find((x) => x.id === to)!;
+    const sim = { pop: dstPop, founded: true, p: freqOf(rTo, dstPop) };
+    simsRef.current = { ...simsRef.current, [to]: sim };
+    setSims((prev) => ({ ...prev, [to]: sim }));
+    playSfx("snap");
+    fire(
+      "fluxo-genico",
+      "🌊",
+      "FLUXO GÊNICO",
+      `Migrantes de ${REGIONS.find((x) => x.id === from)!.name} levaram seus alelos para ${rTo.name} — as frequências das duas se misturaram.`,
+    );
+  };
+
   const reset = () => {
     setPlaying(false);
     seen.current = new Set();
     genRef.current = 0;
+    setMutationOn(false);
+    setMigrateFrom(null);
+    foundedAt.current = { berco: 0, selva: 0, dunas: 0 };
     setGen(0);
     setHistory([{ gen: 0, berco: 50, selva: 50, dunas: 50 }]);
     setSims(() => {
@@ -283,13 +349,48 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
           Aperte <b>Play</b> e veja a mesma espécie virar roxa na Selva e amarela nas Dunas — enquanto o Berço (sem pressão) fica parado.
         </p>
 
-        {/* regiões */}
-        <SectionLabel className="mb-2 mt-4 block">Regiões de Pangênia</SectionLabel>
+        {/* forças: mutação + regiões */}
+        <div className="mb-2 mt-4 flex items-center justify-between">
+          <SectionLabel>Regiões de Pangênia</SectionLabel>
+          <button
+            onClick={() => {
+              playSfx("tap");
+              setMutationOn((o) => !o);
+            }}
+            className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${
+              mutationOn ? "bg-[#BFD3A2] text-white" : "bg-white/60 text-[#4A4063]/70"
+            }`}
+          >
+            🧬 Mutação {mutationOn ? "ligada" : "desligada"}
+          </button>
+        </div>
+
+        {migrateFrom && (
+          <div className="mb-2 flex items-center justify-between gap-2 rounded-2xl bg-[#9CC8F0]/25 px-3 py-2 text-xs font-bold text-[#3E6890]">
+            <span className="truncate">
+              🌊 Migrar de {REGIONS.find((x) => x.id === migrateFrom)?.name} → toque no destino
+            </span>
+            <button
+              onClick={() => setMigrateFrom(null)}
+              className="shrink-0 rounded-full bg-white/80 px-2.5 py-0.5"
+            >
+              cancelar
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-2.5">
           {REGIONS.map((r) => {
             const s = sims[r.id];
+            const isTarget = !!migrateFrom && s.founded && r.id !== migrateFrom;
             return (
-              <div key={r.id} className="m-clay flex flex-col gap-1.5 rounded-[20px] p-3">
+              <div
+                key={r.id}
+                onClick={isTarget ? () => doMigrate(migrateFrom!, r.id) : undefined}
+                className={`m-clay flex flex-col gap-1.5 rounded-[20px] p-3 ${
+                  isTarget ? "cursor-pointer ring-2 ring-[#9CC8F0]" : ""
+                }`}
+              >
                 <div className="flex items-center gap-2">
                   <span
                     className="flex h-9 w-9 items-center justify-center rounded-2xl text-lg"
@@ -310,13 +411,31 @@ export function EvolutionScreen({ onBack }: { onBack: () => void }) {
                         style={{ width: `${Math.round(s.p * 100)}%`, background: r.color }}
                       />
                     </div>
-                    <p className="text-[10px] font-bold text-[#4A4063]/60">
-                      {r.trackLabel}: {Math.round(s.p * 100)}%
-                    </p>
+                    <div className="flex items-center justify-between gap-1">
+                      <p className="truncate text-[10px] font-bold text-[#4A4063]/60">
+                        {r.trackLabel}: {Math.round(s.p * 100)}%
+                      </p>
+                      {!migrateFrom && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            playSfx("tap");
+                            setMigrateFrom(r.id);
+                          }}
+                          className="shrink-0 rounded-full bg-[#9CC8F0]/25 px-2 py-0.5 text-[10px] font-bold text-[#3E6890]"
+                          aria-label={`Migrar de ${r.name}`}
+                        >
+                          ➡️ migrar
+                        </button>
+                      )}
+                    </div>
                   </>
                 ) : (
                   <button
-                    onClick={() => colonize(r.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      colonize(r.id);
+                    }}
                     className="rounded-xl bg-[#BCA2E6]/15 py-1.5 text-xs font-bold text-[#7E64B0]"
                   >
                     🚩 Colonizar

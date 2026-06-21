@@ -101,6 +101,30 @@ export function seedPopulation(
   return Array.from({ length: K }, () => makeIndividual(gene, domAllele, recAllele, p));
 }
 
+// Alelo alternativo de cada alelo (para mutação: cria a outra versão).
+const ALT: Record<string, string> = {
+  C: "c", c: "C", O: "o", o: "O", M: "m", m: "M",
+  V: "B", B: "V", A: "R", R: "A", G: "g", g: "G",
+};
+
+// Mutação: cada alelo do gene observado tem chance `rate` de virar a outra
+// versão. É assim que um alelo NOVO (que sumiu/nunca houve) pode reaparecer.
+export function mutate(pop: Creature[], gene: GeneKey, rate: number): Creature[] {
+  for (const c of pop) {
+    const arr = c.genes[gene];
+    let changed = false;
+    const out = arr.map((a) => {
+      if (ALT[a] && Math.random() < rate) {
+        changed = true;
+        return ALT[a];
+      }
+      return a;
+    });
+    if (changed) c.genes = { ...c.genes, [gene]: out };
+  }
+  return pop;
+}
+
 // Amostra aleatória de `n` indivíduos (para colonização / efeito fundador).
 export function sample(pop: Creature[], n: number): Creature[] {
   const copy = [...pop];

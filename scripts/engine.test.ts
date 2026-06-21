@@ -5,7 +5,7 @@
 import { breedDetailed } from "../src/app/engine/breeding";
 import { phenotype } from "../src/app/engine/phenotype";
 import { dexCatalog } from "../src/app/engine/dex";
-import { step, alleleFreq, seedPopulation, fitness } from "../src/app/engine/population";
+import { step, alleleFreq, seedPopulation, fitness, mutate } from "../src/app/engine/population";
 import type { Creature, Genes, Sex } from "../src/app/engine/types";
 
 let pass = 0;
@@ -150,6 +150,14 @@ ok(fitness(phenotype(mk("XX", { cor: ["c", "c"] })), { gene: "cor", favored: ["r
   ok(small > large, `deriva: pop pequena fixa mais (pequena ${small.toFixed(2)} > grande ${large.toFixed(2)})`);
   ok(small > 0.35, `deriva forte em pop pequena (${small.toFixed(2)})`);
   ok(large < 0.2, `pop grande quase não fixa por acaso (${large.toFixed(2)})`);
+}
+
+// Mutação: cria o alelo que estava ausente (fonte de variação)
+{
+  let pop = seedPopulation(200, "cor", "C", "c", 1); // só alelo C (c ausente)
+  ok(alleleFreq(pop, "cor", "c") === 0, "início sem o alelo c");
+  pop = mutate(pop, "cor", 0.05);
+  ok(alleleFreq(pop, "cor", "c") > 0, "mutação introduz o alelo c que não existia");
 }
 
 console.log("\n============================");
