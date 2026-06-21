@@ -24,7 +24,7 @@ export function starterCreatures(): Creature[] {
     {
       id: uid(),
       sex: "XX",
-      nickname: "Lila",
+      nickname: "Gabriela",
       genes: {
         cor: ["C", "c"],
         orelhas: ["O", "o"],
@@ -37,7 +37,7 @@ export function starterCreatures(): Creature[] {
     {
       id: uid(),
       sex: "XY",
-      nickname: "Theo",
+      nickname: "Aquiles",
       genes: {
         cor: ["C", "c"],
         orelhas: ["O", "o"],
