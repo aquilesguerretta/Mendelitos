@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import { GameProvider, useGame } from "./state/GameContext";
 import { TitleScreen } from "./screens/TitleScreen";
+import { IntroScreen } from "./screens/IntroScreen";
 import { Lab } from "./screens/Lab";
 import { BreedScreen } from "./screens/BreedScreen";
 import { startMusic } from "./engine/audio";
 
-type Screen = "title" | "lab" | "breed";
+type Screen = "title" | "intro" | "lab" | "breed";
 
 function Game() {
   const game = useGame();
-  const [screen, setScreen] = useState<Screen>(game.seenTitle ? "lab" : "title");
+  const [screen, setScreen] = useState<Screen>(
+    !game.seenTitle ? "title" : !game.seenIntro ? "intro" : "lab",
+  );
 
   // A trilha só pode começar após um gesto do usuário (política de áudio).
   useEffect(() => {
@@ -23,13 +26,21 @@ function Game() {
   }, [game.muted]);
 
   return (
-    <div className="m-app-bg flex min-h-[100dvh] w-full justify-center text-[#463A5E]">
+    <div className="m-app-bg flex min-h-[100dvh] w-full justify-center text-[#4A4063]">
       <div className="m-app-bg relative w-full max-w-md shadow-[0_0_60px_-20px_rgba(174,150,232,0.4)]">
         {screen === "title" && (
           <TitleScreen
             onStart={() => {
               game.setSeenTitle();
               if (!game.muted) startMusic();
+              setScreen(game.seenIntro ? "lab" : "intro");
+            }}
+          />
+        )}
+        {screen === "intro" && (
+          <IntroScreen
+            onDone={() => {
+              game.setSeenIntro();
               setScreen("lab");
             }}
           />

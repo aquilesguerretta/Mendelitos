@@ -40,6 +40,8 @@ interface GameApi extends SaveState {
   scan: (creatureId: string, gene: GeneKey) => string | null;
   toggleMute: () => void;
   setSeenTitle: () => void;
+  setSeenIntro: () => void;
+  toggleFavorite: (id: string) => void;
   resetProgress: () => void;
   isConceptUnlocked: (id: string) => boolean;
 }
@@ -201,6 +203,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, seenTitle: true }));
   }, []);
 
+  const setSeenIntro = useCallback<GameApi["setSeenIntro"]>(() => {
+    setState((s) => ({ ...s, seenIntro: true }));
+  }, []);
+
+  const toggleFavorite = useCallback<GameApi["toggleFavorite"]>((id) => {
+    setState((s) => ({
+      ...s,
+      favorites: s.favorites.includes(id)
+        ? s.favorites.filter((x) => x !== id)
+        : [...s.favorites, id],
+    }));
+  }, []);
+
   const resetProgress = useCallback<GameApi["resetProgress"]>(() => {
     resetState();
     setState(defaultState());
@@ -222,6 +237,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       scan,
       toggleMute,
       setSeenTitle,
+      setSeenIntro,
+      toggleFavorite,
       resetProgress,
       isConceptUnlocked,
     }),
@@ -235,6 +252,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       scan,
       toggleMute,
       setSeenTitle,
+      setSeenIntro,
+      toggleFavorite,
       resetProgress,
       isConceptUnlocked,
     ],

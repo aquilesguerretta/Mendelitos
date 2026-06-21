@@ -37,12 +37,12 @@ export function TitleScreen({ onStart }: { onStart: () => void }) {
           ))}
         </div>
         <h1
-          className="font-display leading-none text-[#6E5BB8]"
+          className="font-display leading-none text-[#7E64B0]"
           style={{ fontSize: "clamp(2.8rem, 11vw, 4.6rem)" }}
         >
           Mendelitos
         </h1>
-        <p className="mt-2 font-display text-[#463A5E]" style={{ fontSize: "clamp(0.95rem, 4vw, 1.25rem)" }}>
+        <p className="mt-2 font-display text-[#4A4063]" style={{ fontSize: "clamp(0.95rem, 4vw, 1.25rem)" }}>
           {STRINGS.subtitle}
         </p>
       </motion.div>
@@ -75,7 +75,7 @@ export function TitleScreen({ onStart }: { onStart: () => void }) {
         </CuteButton>
       </motion.div>
 
-      <p className="relative z-10 mt-6 max-w-xs text-xs text-[#463A5E]/60 font-body">
+      <p className="relative z-10 mt-6 max-w-xs text-xs text-[#4A4063]/60 font-body">
         Toque nos bichinhos! Cruze, descubra as Leis de Mendel de verdade e colecione todos os fenótipos.
       </p>
     </div>

@@ -25,11 +25,11 @@ function Overlay({
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/60 bg-white/70 px-4 py-3 backdrop-blur-md">
         <button
           onClick={onClose}
-          className="rounded-full border border-white/70 bg-white/90 px-3.5 py-2 text-sm font-semibold text-[#463A5E] m-soft-shadow"
+          className="rounded-full border border-white/70 bg-white/90 px-3.5 py-2 text-sm font-semibold text-[#4A4063] m-soft-shadow"
         >
           ← {STRINGS.buttons.voltar}
         </button>
-        <h2 className="font-display text-[#6E5BB8]">{title}</h2>
+        <h2 className="font-display text-[#7E64B0]">{title}</h2>
         <span className="w-16" />
       </div>
       <div className="flex-1 overflow-y-auto px-4 py-4">{children}</div>
@@ -45,7 +45,7 @@ export function DexPanel({ onClose }: { onClose: () => void }) {
 
   return (
     <Overlay title={`${STRINGS.buttons.dex} — ${WORLD_NAMES[game.world]}`} onClose={onClose}>
-      <p className="mb-3 text-center text-sm font-semibold text-[#463A5E]/80">
+      <p className="mb-3 text-center text-sm font-semibold text-[#4A4063]/80">
         {found} / {catalog.length} catalogados
       </p>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
@@ -65,7 +65,7 @@ export function DexPanel({ onClose }: { onClose: () => void }) {
                   ❔
                 </div>
               )}
-              <span className="mt-1 text-center text-[10px] leading-tight text-[#463A5E]/70">
+              <span className="mt-1 text-center text-[10px] leading-tight text-[#4A4063]/70">
                 {seen ? phenoLabel(e.key, game.world) : STRINGS.dexLocked}
               </span>
             </div>
@@ -98,13 +98,13 @@ export function CodexPanel({ onClose }: { onClose: () => void }) {
                 onClick={() => unlocked && setOpen(isOpen ? null : entry.id)}
                 className="flex w-full items-center gap-3 p-3 text-left"
               >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#AE96E8] font-display text-sm font-bold text-white">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#BCA2E6] font-display text-sm font-bold text-white">
                   {unlocked ? entry.n : "🔒"}
                 </span>
-                <span className="flex-1 font-display font-semibold text-[#463A5E]">
+                <span className="flex-1 font-display font-semibold text-[#4A4063]">
                   {unlocked ? entry.title : "???"}
                 </span>
-                {unlocked && <span className="text-[#6E5BB8]">{isOpen ? "▲" : "▼"}</span>}
+                {unlocked && <span className="text-[#7E64B0]">{isOpen ? "▲" : "▼"}</span>}
               </button>
               {unlocked && isOpen && (
                 <motion.div
@@ -112,9 +112,9 @@ export function CodexPanel({ onClose }: { onClose: () => void }) {
                   animate={{ height: "auto", opacity: 1 }}
                   className="px-4 pb-4"
                 >
-                  <p className="mb-2 text-sm italic text-[#6E5BB8]">{entry.found}</p>
-                  <p className="text-sm leading-relaxed text-[#463A5E]/90 font-body">{entry.body}</p>
-                  <div className="mt-2 rounded-xl bg-[#F6F1FC] px-3 py-2 text-xs text-[#463A5E]/80">
+                  <p className="mb-2 text-sm italic text-[#7E64B0]">{entry.found}</p>
+                  <p className="text-sm leading-relaxed text-[#4A4063]/90 font-body">{entry.body}</p>
+                  <div className="mt-2 rounded-xl bg-[#F3F1E4] px-3 py-2 text-xs text-[#4A4063]/80">
                     📊 {entry.diagram}
                   </div>
                 </motion.div>
@@ -139,26 +139,54 @@ export function MissionsPanel({ onClose }: { onClose: () => void }) {
             <Panel key={m.id} className="flex items-center gap-3 p-3">
               <span
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold ${
-                  done ? "bg-[#F3DA86] text-[#5C4A07]" : "bg-[#F7D17A] text-[#463A5E]"
+                  done ? "bg-[#F7DC83] text-[#6B5A1A]" : "bg-[#F8D08A] text-[#4A4063]"
                 }`}
               >
                 {done ? "✓" : m.label}
               </span>
               <div className="flex-1">
-                <p className={`font-body text-sm ${done ? "text-[#463A5E]/50 line-through" : "text-[#463A5E]"}`}>
+                <p className={`font-body text-sm ${done ? "text-[#4A4063]/50 line-through" : "text-[#4A4063]"}`}>
                   {m.text}
                 </p>
-                <p className="text-xs text-[#6E5BB8]">{m.concept} {m.bonus && "· bônus"}</p>
+                <p className="text-xs text-[#7E64B0]">{m.concept} {m.bonus && "· bônus"}</p>
               </div>
-              <span className="shrink-0 text-xs font-semibold text-[#F7D17A]">🪙 {m.reward}</span>
+              <span className="shrink-0 text-xs font-semibold text-[#F8D08A]">🪙 {m.reward}</span>
             </Panel>
           );
         })}
         {game.world < 3 && (
-          <p className="pt-2 text-center text-xs text-[#463A5E]/60">
+          <p className="pt-2 text-center text-xs text-[#4A4063]/60">
             Complete missões para desbloquear novos mundos e genes!
           </p>
         )}
+      </div>
+    </Overlay>
+  );
+}
+
+export function HowToPlayPanel({ onClose }: { onClose: () => void }) {
+  return (
+    <Overlay title={STRINGS.buttons.comoJogar} onClose={onClose}>
+      <div className="mx-auto max-w-md space-y-2.5">
+        <p className="mb-3 text-center text-sm font-semibold text-[#4A4063]/80 font-body">
+          Aprenda genética cruzando criaturas fofas 💜
+        </p>
+        {STRINGS.howTo.map((step) => (
+          <Panel key={step.title} className="flex items-start gap-3 p-3.5">
+            <span className="text-2xl leading-none">{step.emoji}</span>
+            <div>
+              <p className="font-display font-semibold text-[#4A4063]">{step.title}</p>
+              <p className="mt-0.5 text-sm leading-relaxed text-[#4A4063]/80 font-body">
+                {step.body}
+              </p>
+            </div>
+          </Panel>
+        ))}
+        <div className="pt-2">
+          <CuteButton variant="primary" onClick={onClose} full>
+            Entendi! 💪
+          </CuteButton>
+        </div>
       </div>
     </Overlay>
   );
@@ -172,24 +200,24 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
     <Overlay title="Configurações" onClose={onClose}>
       <div className="mx-auto max-w-md space-y-4">
         <Panel className="flex items-center justify-between p-4">
-          <span className="font-display font-semibold text-[#463A5E]">Som</span>
+          <span className="font-display font-semibold text-[#4A4063]">Som</span>
           <CuteButton variant={game.muted ? "ghost" : "sun"} onClick={game.toggleMute}>
             {game.muted ? "🔇 Mudo" : "🔊 Ligado"}
           </CuteButton>
         </Panel>
 
         <Panel className="p-4">
-          <p className="mb-2 font-display font-semibold text-[#463A5E]">
+          <p className="mb-2 font-display font-semibold text-[#4A4063]">
             Mundo atual: {WORLD_NAMES[game.world]}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {activeGenes.map((g) => (
-              <span key={g} className="rounded-full bg-[#F6F1FC] px-2.5 py-1 text-xs text-[#463A5E]">
+              <span key={g} className="rounded-full bg-[#F3F1E4] px-2.5 py-1 text-xs text-[#4A4063]">
                 {GENES[g].label}
               </span>
             ))}
           </div>
-          <p className="mt-2 text-xs text-[#463A5E]/60">🪙 {game.coins} moedas</p>
+          <p className="mt-2 text-xs text-[#4A4063]/60">🪙 {game.coins} moedas</p>
         </Panel>
 
         <Panel className="p-4">
@@ -199,7 +227,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
             </CuteButton>
           ) : (
             <div className="space-y-2 text-center">
-              <p className="text-sm text-[#463A5E]">Tem certeza? Isso apaga tudo.</p>
+              <p className="text-sm text-[#4A4063]">Tem certeza? Isso apaga tudo.</p>
               <div className="flex gap-2">
                 <CuteButton variant="ghost" onClick={() => setConfirm(false)} className="flex-1">
                   Cancelar

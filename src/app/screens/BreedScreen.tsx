@@ -48,9 +48,29 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
     });
   };
 
+  const surprise = () => {
+    const females = collection.filter((c) => c.sex === "XX");
+    const males = collection.filter((c) => c.sex === "XY");
+    if (!females.length || !males.length) return;
+    const f = females[Math.floor(Math.random() * females.length)];
+    const m = males[Math.floor(Math.random() * males.length)];
+    setSelected([f.id, m.id]);
+    playSfx("tap");
+  };
+
   const startBreed = () => {
     if (!mother || !father) return;
-    const detail = breedDetailed(mother, father);
+    // Linhagem: cada filhote guarda de quem nasceu (árvore genealógica).
+    const lineage = {
+      motherId: mother.id,
+      fatherId: father.id,
+      motherName: nameOf(mother, "Mãe"),
+      fatherName: nameOf(father, "Pai"),
+    };
+    const detail = breedDetailed(mother, father).map((d) => ({
+      ...d,
+      child: { ...d.child, parents: lineage },
+    }));
     setLitter(detail);
     setHatched([false, false, false, false]);
     setKeep(Object.fromEntries(detail.map((d) => [d.child.id, true])));
@@ -123,13 +143,24 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
         <Blobs />
         <div className="relative z-10 flex flex-1 flex-col">
           <Header title={STRINGS.buttons.cruzar} onBack={onBack} />
-          <p className="mb-3 text-center text-sm text-[#463A5E]/80 font-body">
+          <p className="mb-3 text-center text-sm text-[#4A4063]/80 font-body">
             {selected.length === 0
               ? STRINGS.selectParents
               : `${picked.map((c) => c.sex === "XX" ? "♀" : "♂").join(" + ")} selecionado${selected.length > 1 ? "s" : ""}`}
           </p>
+          {collection.length >= 2 && (
+            <div className="mb-3 flex justify-center">
+              <motion.button
+                whileTap={{ scale: 0.94 }}
+                onClick={surprise}
+                className="rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-[#7E64B0] backdrop-blur m-soft-shadow"
+              >
+                🎲 {STRINGS.buttons.surpreenda}
+              </motion.button>
+            </div>
+          )}
           {collection.length < 2 ? (
-            <Panel className="mt-6 p-6 text-center text-[#463A5E]">
+            <Panel className="mt-6 p-6 text-center text-[#4A4063]">
               Você precisa de pelo menos 2 Mendelitos.
             </Panel>
           ) : (
@@ -143,20 +174,20 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
                     onClick={() => toggle(c.id)}
                     className={`relative flex flex-col items-center rounded-3xl border-2 bg-white p-2 pt-4 transition-all ${
                       sel
-                        ? "border-[#AE96E8] ring-4 ring-[#AE96E8]/20"
+                        ? "border-[#BCA2E6] ring-4 ring-[#BCA2E6]/20"
                         : "border-white"
                     } m-soft-shadow`}
                   >
-                    <span className="absolute left-2.5 top-2 z-10 text-xs text-[#463A5E]/50">
+                    <span className="absolute left-2.5 top-2 z-10 text-xs text-[#4A4063]/50">
                       {c.sex === "XX" ? "♀" : "♂"}
                     </span>
                     {sel && (
-                      <span className="absolute right-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[#AE96E8] text-xs text-white">
+                      <span className="absolute right-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[#BCA2E6] text-xs text-white">
                         ✓
                       </span>
                     )}
                     <Creature creature={c} world={game.world} size={76} interactive={false} />
-                    <span className="mt-1 max-w-full truncate text-[11px] font-bold text-[#463A5E] font-body">
+                    <span className="mt-1 max-w-full truncate text-[11px] font-bold text-[#4A4063] font-body">
                       {nameOf(c, `#${i + 1}`)}
                     </span>
                   </motion.button>
@@ -166,7 +197,7 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
           )}
 
           {sameSexError && (
-            <p className="mt-3 rounded-2xl bg-[#F3AECB]/20 px-3 py-2 text-center text-sm font-semibold text-[#A6457A]">
+            <p className="mt-3 rounded-2xl bg-[#F6C2D4]/20 px-3 py-2 text-center text-sm font-semibold text-[#9E4E72]">
               Para cruzar você precisa de uma fêmea (♀) e um macho (♂).
             </p>
           )}
@@ -220,7 +251,7 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
         <div className="relative mb-4 flex items-center justify-between gap-2 rounded-[26px] border border-white/70 bg-white/55 px-3 py-3 backdrop-blur-md m-soft-shadow">
           <div className="flex flex-col items-center">
             <Creature creature={mother!} world={game.world} size={90} interactive={false} />
-            <span className="text-xs font-bold text-[#463A5E]">♀ {nameOf(mother!, "Mãe")}</span>
+            <span className="text-xs font-bold text-[#4A4063]">♀ {nameOf(mother!, "Mãe")}</span>
           </div>
           <motion.div
             animate={{ scale: [1, 1.3, 1] }}
@@ -231,12 +262,12 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
           </motion.div>
           <div className="flex flex-col items-center">
             <Creature creature={father!} world={game.world} size={90} interactive={false} />
-            <span className="text-xs font-bold text-[#463A5E]">♂ {nameOf(father!, "Pai")}</span>
+            <span className="text-xs font-bold text-[#4A4063]">♂ {nameOf(father!, "Pai")}</span>
           </div>
         </div>
 
         {phase === "segregation" && (
-          <p className="mb-2 rounded-2xl bg-[#AE96E8]/12 px-3 py-2 text-center text-sm font-semibold text-[#6E5BB8] font-body">
+          <p className="mb-2 rounded-2xl bg-[#BCA2E6]/12 px-3 py-2 text-center text-sm font-semibold text-[#7E64B0] font-body">
             Cada filhote recebe 1 alelo da mãe e 1 do pai…
           </p>
         )}
@@ -262,7 +293,7 @@ export function BreedScreen({ onBack }: { onBack: () => void }) {
 
         {phase === "reveal" && (
           <div className="mt-auto pt-5">
-            <p className="mb-2 text-center text-sm font-semibold text-[#463A5E] font-body">
+            <p className="mb-2 text-center text-sm font-semibold text-[#4A4063] font-body">
               {STRINGS.keepRelease}
             </p>
             <CuteButton variant="primary" onClick={finishKeep} full>
@@ -288,14 +319,14 @@ function Header({ title, onBack }: { title: string; onBack?: () => void }) {
       {onBack ? (
         <button
           onClick={onBack}
-          className="rounded-full border border-white/70 bg-white/80 px-3.5 py-2 text-sm font-semibold text-[#463A5E] backdrop-blur m-soft-shadow"
+          className="rounded-full border border-white/70 bg-white/80 px-3.5 py-2 text-sm font-semibold text-[#4A4063] backdrop-blur m-soft-shadow"
         >
           ← {STRINGS.buttons.voltar}
         </button>
       ) : (
         <span className="w-20" />
       )}
-      <h2 className="font-display text-[#6E5BB8]">{title}</h2>
+      <h2 className="font-display text-[#7E64B0]">{title}</h2>
       <span className="w-20" />
     </div>
   );
@@ -320,7 +351,7 @@ function AlleleToken({
       className="flex h-7 w-7 items-center justify-center rounded-full font-display font-bold shadow-md"
       style={{
         backgroundColor: isDom ? PALETTE.purple : PALETTE.yellow,
-        color: isDom ? "#fff" : "#5C4A07",
+        color: isDom ? "#fff" : "#6B5A1A",
       }}
     >
       {allele}
@@ -387,7 +418,7 @@ function EggSlot({
 
       {hatched && (
         <>
-          <span className="text-xs font-semibold text-[#463A5E]">
+          <span className="text-xs font-semibold text-[#4A4063]">
             {detail.child.sex === "XX" ? "♀" : "♂"}
             {rare && " ✨"}
           </span>
@@ -396,8 +427,8 @@ function EggSlot({
               onClick={onToggleKeep}
               className={`mt-1 rounded-full px-3 py-1 text-xs font-semibold ${
                 keep
-                  ? "bg-[#F3DA86] text-white"
-                  : "bg-white text-[#463A5E] line-through opacity-60"
+                  ? "bg-[#F7DC83] text-white"
+                  : "bg-white text-[#4A4063] line-through opacity-60"
               }`}
             >
               {keep ? STRINGS.buttons.guardar : STRINGS.buttons.soltar}

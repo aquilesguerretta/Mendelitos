@@ -9,15 +9,15 @@ type Variant = "primary" | "sun" | "pink" | "ghost" | "green";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-gradient-to-b from-[#BBA6EE] to-[#AE96E8] text-[#3A2E5C] shadow-[0_5px_0_#8E76D6,0_10px_18px_-6px_rgba(142,118,214,0.5)]",
+    "bg-gradient-to-b from-[#CBB4EE] to-[#BCA2E6] text-[#3E3360] shadow-[0_5px_0_#9B83D8,0_10px_18px_-6px_rgba(142,118,214,0.5)]",
   green:
-    "bg-gradient-to-b from-[#F7DF8A] to-[#F3DA86] text-[#5C4A07] shadow-[0_5px_0_#E3C25E,0_10px_18px_-6px_rgba(229,192,74,0.45)]",
+    "bg-gradient-to-b from-[#FAE39A] to-[#F7DC83] text-[#6B5A1A] shadow-[0_5px_0_#E3C25E,0_10px_18px_-6px_rgba(229,192,74,0.45)]",
   sun:
-    "bg-gradient-to-b from-[#FBE0A0] to-[#F7D17A] text-[#6B4A07] shadow-[0_5px_0_#E8BB55,0_10px_18px_-6px_rgba(232,187,85,0.45)]",
+    "bg-gradient-to-b from-[#FBE3A6] to-[#F8D08A] text-[#6B5A1A] shadow-[0_5px_0_#E8BB55,0_10px_18px_-6px_rgba(232,187,85,0.45)]",
   pink:
-    "bg-gradient-to-b from-[#F8C6DC] to-[#F3AECB] text-[#7A2F53] shadow-[0_5px_0_#E292B6,0_10px_18px_-6px_rgba(226,146,182,0.45)]",
+    "bg-gradient-to-b from-[#F8CFDE] to-[#F6C2D4] text-[#7A3A58] shadow-[0_5px_0_#E7A6C2,0_10px_18px_-6px_rgba(226,146,182,0.45)]",
   ghost:
-    "bg-white text-[#463A5E] shadow-[0_5px_0_#ECE3FB,0_8px_16px_-8px_rgba(174,150,232,0.3)]",
+    "bg-white text-[#4A4063] shadow-[0_5px_0_#ECE3FB,0_8px_16px_-8px_rgba(174,150,232,0.3)]",
 };
 
 export function CuteButton({
@@ -73,7 +73,7 @@ export function Panel({
 
 export function Chip({
   children,
-  color = "#AE96E8",
+  color = "#BCA2E6",
 }: {
   children: ReactNode;
   color?: string;
@@ -95,22 +95,22 @@ export function Blobs() {
       <motion.div
         animate={{ y: [0, 14, 0], x: [0, 6, 0] }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -left-16 -top-10 h-48 w-48 rounded-full bg-[#F3AECB]/30 blur-2xl"
+        className="absolute -left-16 -top-10 h-48 w-48 rounded-full bg-[#F6C2D4]/30 blur-2xl"
       />
       <motion.div
         animate={{ y: [0, -12, 0], x: [0, -8, 0] }}
         transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -right-20 top-20 h-56 w-56 rounded-full bg-[#A9C9F2]/30 blur-2xl"
+        className="absolute -right-20 top-20 h-56 w-56 rounded-full bg-[#9CC8F0]/30 blur-2xl"
       />
       <motion.div
         animate={{ y: [0, 16, 0] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-16 -left-20 h-52 w-52 rounded-full bg-[#F3DA86]/30 blur-2xl"
+        className="absolute bottom-16 -left-20 h-52 w-52 rounded-full bg-[#F7DC83]/30 blur-2xl"
       />
       <motion.div
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-[#AE96E8]/25 blur-2xl"
+        className="absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-[#BCA2E6]/25 blur-2xl"
       />
     </div>
   );

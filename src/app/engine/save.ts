@@ -14,7 +14,9 @@ export interface SaveState {
   coins: number;
   muted: boolean;
   seenTitle: boolean;
+  seenIntro: boolean;
   breedCount: number;
+  favorites: string[]; // ids de Mendelitos favoritados
 }
 
 export function starterCreatures(): Creature[] {
@@ -58,7 +60,9 @@ export function defaultState(): SaveState {
     coins: 3,
     muted: false,
     seenTitle: false,
+    seenIntro: false,
     breedCount: 0,
+    favorites: [],
   };
 }
 

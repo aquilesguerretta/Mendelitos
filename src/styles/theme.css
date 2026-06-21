@@ -2,14 +2,14 @@
 
 :root {
   --font-size: 16px;
-  --background: #ffffff;
-  --foreground: oklch(0.145 0 0);
+  --background: #F3F1E4;
+  --foreground: #4A4063;
   --card: #ffffff;
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: #4A4063;
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
+  --primary: #BCA2E6;
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.95 0.0058 264.53);
   --secondary-foreground: #030213;
   --muted: #ececf0;
@@ -18,9 +18,9 @@
   --accent-foreground: #030213;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.1);
+  --border: rgba(74, 64, 99, 0.10);
   --input: transparent;
-  --input-background: #f3f3f5;
+  --input-background: #f6f4ec;
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
@@ -119,20 +119,28 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* ===== Mendelitos cute theme ===== */
+/* ===== Mendelitos — paleta pastel (cream + blush/peach/butter/lavender/sky/sage) ===== */
 :root {
-  --m-bg: #F6F1FC;
-  --m-purple: #AE96E8;
-  --m-green: #F3DA86;
-  --m-sun: #F7D17A;
-  --m-pink: #F3AECB;
-  --m-text: #463A5E;
+  --m-bg: #F3F1E4;          /* creme suave */
+  --m-purple: #BCA2E6;      /* cor C (dominante) — lavanda */
+  --m-green: #F7DC83;       /* cor c (recessivo) — butter yellow */
+  --m-sun: #F8D08A;         /* acento sol / moedas */
+  --m-pink: #F6C2D4;        /* blush pink */
+  --m-text: #4A4063;        /* ameixa profunda (legível no creme) */
   --m-card: #ffffff;
-  --m-crest-red: #F2A0A0;
-  --m-crest-pink: #F7C8DD;
-  --m-crest-white: #fafafa;
-  --m-scale-blue: #A9C9F2;
-  --m-scale-red: #F2A0A0;
+  /* acentos extras da paleta */
+  --m-peach: #F9D2AE;       /* soft peach */
+  --m-sky: #9CC8F0;         /* sky blue */
+  --m-sage: #BFD3A2;        /* mind cream / sage */
+  --m-lavender: #D7C6EE;    /* lavender claro */
+  --m-title: #7E64B0;       /* roxo de títulos */
+  /* asas (crista, dominância incompleta) */
+  --m-crest-red: #F2A7A0;
+  --m-crest-pink: #F8CADB;
+  --m-crest-white: #FFFDF6;
+  /* escamas (codominância) */
+  --m-scale-blue: #9CC8F0;
+  --m-scale-red: #F1A2AC;
   --m-font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
   --m-font-body: 'Nunito', system-ui, sans-serif;
 }
@@ -145,18 +153,26 @@
   --color-m-pink: var(--m-pink);
   --color-m-text: var(--m-text);
   --color-m-card: var(--m-card);
+  --color-m-peach: var(--m-peach);
+  --color-m-sky: var(--m-sky);
+  --color-m-sage: var(--m-sage);
+  --color-m-lavender: var(--m-lavender);
+  --color-m-title: var(--m-title);
   --font-display: var(--m-font-display);
   --font-body: var(--m-font-body);
 }
 
-/* Fundo em gradiente coeso — família lavanda/periwinkle */
+/* Fundo em gradiente pastel coeso sobre creme (malha suave) */
 .m-app-bg {
   background:
-    radial-gradient(110% 70% at 50% -10%, #E6DCFF 0%, rgba(230, 220, 255, 0) 60%),
-    linear-gradient(180deg, #F1EBFD 0%, #F4EFFE 55%, #EFE9FB 100%);
+    radial-gradient(60% 45% at 12% 6%, rgba(246, 194, 212, 0.50) 0%, rgba(246,194,212,0) 60%),
+    radial-gradient(62% 48% at 92% 10%, rgba(156, 200, 240, 0.45) 0%, rgba(156,200,240,0) 60%),
+    radial-gradient(70% 55% at 86% 96%, rgba(191, 211, 162, 0.42) 0%, rgba(191,211,162,0) 62%),
+    radial-gradient(66% 52% at 8% 98%, rgba(249, 210, 174, 0.45) 0%, rgba(249,210,174,0) 62%),
+    linear-gradient(180deg, #F5F3E8 0%, #F1EFE1 100%);
 }
 .m-soft-shadow {
-  box-shadow: 0 10px 30px -8px rgba(174,150,232, 0.25);
+  box-shadow: 0 12px 32px -10px rgba(120, 100, 150, 0.22);
 }
 
 @layer base {

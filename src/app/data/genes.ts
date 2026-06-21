@@ -19,18 +19,21 @@ export interface GeneDef {
 
 // Cores da paleta (seção 8)
 export const PALETTE = {
-  bg: "#F6F1FC",
-  purple: "#AE96E8",
-  yellow: "#F3DA86",
-  sun: "#F7D17A",
-  pink: "#F3AECB",
-  text: "#463A5E",
+  bg: "#F3F1E4",
+  purple: "#BCA2E6",
+  yellow: "#F7DC83",
+  sun: "#F8D08A",
+  pink: "#F6C2D4",
+  text: "#4A4063",
   card: "#FFFFFF",
-  crestRed: "#F2A0A0",
-  crestPink: "#F7C8DD",
-  crestWhite: "#FAFAFA",
-  scaleBlue: "#A9C9F2",
-  scaleRed: "#F2A0A0",
+  peach: "#F9D2AE",
+  sky: "#9CC8F0",
+  sage: "#BFD3A2",
+  crestRed: "#F2A7A0",
+  crestPink: "#F8CADB",
+  crestWhite: "#FFFDF6",
+  scaleBlue: "#9CC8F0",
+  scaleRed: "#F1A2AC",
 } as const;
 
 export const GENES: Record<GeneKey, GeneDef> = {

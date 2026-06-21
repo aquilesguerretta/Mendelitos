@@ -21,11 +21,19 @@ export interface Genes {
   olhos: string[]; // ['G','g'] (XX) | ['G'] (XY)
 }
 
+export interface Lineage {
+  motherId: string;
+  fatherId: string;
+  motherName: string;
+  fatherName: string;
+}
+
 export interface Creature {
   id: string;
   sex: Sex;
   genes: Genes;
   nickname?: string;
+  parents?: Lineage; // linhagem (de quem o filhote nasceu)
 }
 
 export interface Phenotype {

@@ -26,6 +26,21 @@ function shade(hex: string, amt: number): string {
 }
 const darken = (hex: string, amt = 0.18) => shade(hex, amt);
 
+// Caminho de uma espiral de Arquimedes (raio cresce com o ângulo), defasada por `phase`.
+function spiralPath(cx: number, cy: number, turns: number, rMax: number, phase: number): string {
+  const steps = 90;
+  const pts: string[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const ang = phase + t * turns * 2 * Math.PI;
+    const r = 3 + t * rMax;
+    const x = cx + r * Math.cos(ang);
+    const y = cy + r * Math.sin(ang);
+    pts.push(`${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`);
+  }
+  return pts.join(" ");
+}
+
 export function Ears({ type, color }: { type: Phenotype["orelhas"]; color: string }) {
   const dark = darken(color);
   const inner = PALETTE.pink;
@@ -119,29 +134,43 @@ export function Wings({ color }: { color: Phenotype["crista"] }) {
   );
 }
 
-// Escamas -> cor da barriga.
-// Codominância (azul+vermelha): gradiente entre as duas cores.
+// Escamas -> espiral na barriga. CODOMINÂNCIA (azul+vermelha): um braço de
+// espiral de cada cor, entrelaçados — as DUAS cores aparecem inteiras, lado a
+// lado, nunca borradas numa só. 1 alelo = 1 braço (AA: azul/azul, RR:
+// vermelha/vermelha, AR: azul + vermelha).
 export function Scales({ color }: { color: Phenotype["escamas"] }) {
   const blue = PALETTE.scaleBlue;
   const red = PALETTE.scaleRed;
   const gid = useId().replace(/:/g, "");
-  const fill =
-    color === "azul" ? blue : color === "vermelha" ? red : `url(#scale-${gid})`;
+  const armA = color === "vermelha" ? red : blue;
+  const armB = color === "azul" ? blue : red;
+  const cx = 100;
+  const cy = 152;
+  const rMax = 30;
+  const turns = 2.5;
+  const sw = 6.5;
   return (
-    <g opacity="0.95">
-      {color === "azul+vermelha" && (
-        <defs>
-          <linearGradient id={`scale-${gid}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={blue} />
-            <stop offset="42%" stopColor={blue} />
-            <stop offset="58%" stopColor={red} />
-            <stop offset="100%" stopColor={red} />
-          </linearGradient>
-        </defs>
-      )}
-      <ellipse cx="100" cy="152" rx="35" ry="35" fill={fill} />
+    <g opacity="0.96" strokeLinecap="round" fill="none">
+      <defs>
+        <clipPath id={`scaleclip-${gid}`}>
+          <ellipse cx={cx} cy={cy} rx="34" ry="34" />
+        </clipPath>
+      </defs>
+      {/* fundo claro para as duas cores contrastarem */}
+      <ellipse cx={cx} cy={cy} rx="34" ry="34" fill="#ffffff" opacity="0.4" />
+      <g clipPath={`url(#scaleclip-${gid})`}>
+        <path d={spiralPath(cx, cy, turns, rMax, 0)} stroke={armA} strokeWidth={sw} />
+        <path d={spiralPath(cx, cy, turns, rMax, Math.PI)} stroke={armB} strokeWidth={sw} />
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values={`0 ${cx} ${cy}; 360 ${cx} ${cy}`}
+          dur="16s"
+          repeatCount="indefinite"
+        />
+      </g>
       {/* brilho suave */}
-      <ellipse cx="88" cy="140" rx="10" ry="7" fill="#ffffff" opacity="0.3" />
+      <ellipse cx="90" cy="142" rx="8" ry="5" fill="#ffffff" opacity="0.35" />
     </g>
   );
 }
@@ -149,7 +178,7 @@ export function Scales({ color }: { color: Phenotype["escamas"] }) {
 export function Eyes({ size, sex }: { size: Phenotype["olhos"]; sex: "XX" | "XY" }) {
   const r = size === "grandes" ? 15 : 8;
   const pupil = size === "grandes" ? 7 : 4;
-  const ink = "#392E54";
+  const ink = "#3E3360";
   return (
     <g>
       <ellipse cx="80" cy="120" rx={r} ry={r + 1} fill="#ffffff" stroke={ink} strokeWidth="2" />

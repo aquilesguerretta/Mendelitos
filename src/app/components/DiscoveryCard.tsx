@@ -34,14 +34,14 @@ export function DiscoveryCardOverlay({
           className="relative w-full max-w-sm"
         >
           {/* brilho da borda */}
-          <div className="absolute -inset-1 rounded-[28px] bg-gradient-to-br from-[#F7D17A] via-[#F3AECB] to-[#AE96E8] opacity-80 blur-[6px]" />
+          <div className="absolute -inset-1 rounded-[28px] bg-gradient-to-br from-[#F8D08A] via-[#F6C2D4] to-[#BCA2E6] opacity-80 blur-[6px]" />
           <div className="relative rounded-[26px] bg-white p-6 text-center">
-            <div className="mx-auto mb-2 w-fit rounded-full bg-[#F7D17A] px-3 py-1 text-xs font-bold text-[#463A5E]">
+            <div className="mx-auto mb-2 w-fit rounded-full bg-[#F8D08A] px-3 py-1 text-xs font-bold text-[#4A4063]">
               ✨ DESCOBERTA NOVA
             </div>
             <div className="text-5xl">{card.emoji}</div>
-            <h2 className="mt-2 text-[#463A5E]">{card.title}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-[#463A5E]/90 font-body">
+            <h2 className="mt-2 text-[#4A4063]">{card.title}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-[#4A4063]/90 font-body">
               {card.body}
             </p>
             <div className="mt-5">
@@ -55,7 +55,7 @@ export function DiscoveryCardOverlay({
                   <span
                     key={id}
                     className={`h-2 w-2 rounded-full ${
-                      idx === i ? "bg-[#AE96E8]" : "bg-[#AE96E8]/25"
+                      idx === i ? "bg-[#BCA2E6]" : "bg-[#BCA2E6]/25"
                     }`}
                   />
                 ))}
