@@ -36,7 +36,8 @@ function Game() {
             onStart={() => {
               game.setSeenTitle();
               if (!game.muted) startMusic();
-              setScreen(game.seenIntro ? "lab" : "intro");
+              // Jogar sempre mostra o tutorial (tem botão "Pular" pra quem quiser).
+              setScreen("intro");
             }}
           />
         )}
