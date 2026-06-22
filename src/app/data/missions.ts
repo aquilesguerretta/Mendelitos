@@ -33,7 +33,7 @@ export const MISSIONS: Mission[] = [
   {
     id: "M2",
     label: "M2",
-    text: "Tenha 3 Mendelitos verdes na coleção ao mesmo tempo.",
+    text: "Tenha 3 Mendelitos amarelos na coleção ao mesmo tempo.",
     concept: "reforço de recessivo",
     world: 1,
     reward: 3,
