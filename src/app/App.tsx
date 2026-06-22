@@ -14,9 +14,8 @@ type Screen = "title" | "intro" | "lab" | "breed";
 
 function Game() {
   const game = useGame();
-  const [screen, setScreen] = useState<Screen>(
-    !game.seenTitle ? "title" : !game.seenIntro ? "intro" : "lab",
-  );
+  // Sempre abre no menu inicial ao carregar/recarregar a página.
+  const [screen, setScreen] = useState<Screen>("title");
 
   // A trilha só pode começar após um gesto do usuário (política de áudio).
   useEffect(() => {
@@ -49,7 +48,9 @@ function Game() {
             }}
           />
         )}
-        {screen === "lab" && <Lab onBreed={() => setScreen("breed")} />}
+        {screen === "lab" && (
+          <Lab onBreed={() => setScreen("breed")} onHome={() => setScreen("title")} />
+        )}
         {screen === "breed" && <BreedScreen onBack={() => setScreen("lab")} />}
       </div>
     </div>

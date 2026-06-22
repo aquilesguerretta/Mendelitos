@@ -11,6 +11,7 @@ import {
   HelpCircle,
   Volume2,
   VolumeX,
+  Home,
 } from "lucide-react";
 import { useGame } from "../state/GameContext";
 import { Creature } from "../components/Creature/Creature";
@@ -51,7 +52,7 @@ const FILTERS: { id: Filter; label: string }[] = [
   { id: "fav", label: "⭐" },
 ];
 
-export function Lab({ onBreed }: { onBreed: () => void }) {
+export function Lab({ onBreed, onHome }: { onBreed: () => void; onHome: () => void }) {
   const game = useGame();
   const [panel, setPanel] = useState<PanelName>(null);
   const [detail, setDetail] = useState<CreatureT | null>(null);
@@ -84,9 +85,22 @@ export function Lab({ onBreed }: { onBreed: () => void }) {
         <div className="m-glass rounded-[28px] px-4 py-3.5">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="font-display leading-none text-[#7E64B0]" style={{ fontSize: "1.75rem" }}>
-                Mendelitos
-              </h1>
+              <button
+                onClick={() => {
+                  playSfx("tap");
+                  onHome();
+                }}
+                aria-label="Voltar ao menu inicial"
+                className="-m-1 rounded-2xl p-1 text-left transition-transform active:scale-95"
+              >
+                <h1
+                  className="flex items-center gap-1.5 font-display leading-none text-[#7E64B0]"
+                  style={{ fontSize: "1.75rem" }}
+                >
+                  <Home size={17} strokeWidth={2.6} className="opacity-55" />
+                  Mendelitos
+                </h1>
+              </button>
               <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-[#BCA2E6]/18 px-2.5 py-0.5 text-xs font-bold text-[#7E64B0]">
                 <Sparkles size={12} strokeWidth={2.5} /> {WORLD_NAMES[game.world]}
               </span>
