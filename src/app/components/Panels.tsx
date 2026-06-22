@@ -91,7 +91,8 @@ export function CodexPanel({ onClose }: { onClose: () => void }) {
   return (
     <Overlay title={STRINGS.buttons.codex} onClose={onClose}>
       <div className="mx-auto max-w-2xl space-y-2">
-        {CODEX.map((entry) => {
+        {/* Pangênia escondida: mostra só as 12 entradas de Mendel/interações. */}
+        {CODEX.filter((e) => e.n <= 12).map((entry) => {
           const unlocked = game.isConceptUnlocked(entry.id) || game.isConceptUnlocked(entry.unlockHint);
           const isOpen = open === entry.id;
           return (

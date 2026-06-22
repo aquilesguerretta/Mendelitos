@@ -51,7 +51,7 @@ const FILTERS: { id: Filter; label: string }[] = [
   { id: "fav", label: "⭐" },
 ];
 
-export function Lab({ onBreed, onEvolution }: { onBreed: () => void; onEvolution: () => void }) {
+export function Lab({ onBreed }: { onBreed: () => void }) {
   const game = useGame();
   const [panel, setPanel] = useState<PanelName>(null);
   const [detail, setDetail] = useState<CreatureT | null>(null);
@@ -117,31 +117,6 @@ export function Lab({ onBreed, onEvolution }: { onBreed: () => void; onEvolution
 
       {/* ===== Coleção ===== */}
       <main className="relative z-10 flex-1 overflow-y-auto px-4 pb-28 pt-1.5">
-        {/* Banner: aba Evolução (Pangênia) */}
-        <motion.button
-          whileTap={{ scale: 0.98 }}
-          onClick={() => {
-            playSfx("chime");
-            onEvolution();
-          }}
-          className="m-clay relative mb-3 flex w-full items-center gap-3 overflow-hidden rounded-[24px] p-3.5 text-left"
-        >
-          <span
-            className="pointer-events-none absolute inset-0 opacity-25"
-            style={{ background: "linear-gradient(120deg,#BCA2E6,#9CC8F0,#BFD3A2)" }}
-          />
-          <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white/85 text-2xl">
-            🌍
-          </span>
-          <span className="relative flex-1">
-            <span className="block font-display font-bold text-[#4A4063]">Evolução · Pangênia</span>
-            <span className="block text-xs leading-snug text-[#4A4063]/70 font-body">
-              Veja uma população evoluir: seleção, deriva e adaptação ao vivo.
-            </span>
-          </span>
-          <span className="relative text-lg font-bold text-[#7E64B0]">→</span>
-        </motion.button>
-
         <div className="mb-2.5 flex items-center justify-between px-0.5">
           <SectionLabel>Sua coleção · {game.collection.length}</SectionLabel>
           <div className="flex gap-1 rounded-full bg-white/55 p-1 backdrop-blur">
